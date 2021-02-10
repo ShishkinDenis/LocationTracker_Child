@@ -79,11 +79,12 @@ public class SendLocationActivity extends AppCompatActivity {
 
         locationMap = new HashMap<>();
         locationMap.put("geo", "location");
+        getLastLocation();
 
-        btnGetLocation.setOnClickListener(v -> getLastLocation());
+//        btnGetLocation.setOnClickListener(v -> getLastLocation());
 //        getLastLocation();
 //        addData();
-//        btnSendLocation.setOnClickListener(v -> addData());
+        btnSendLocation.setOnClickListener(v -> addData());
 
 //        readData();
 
@@ -145,9 +146,9 @@ public class SendLocationActivity extends AppCompatActivity {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5);
-//        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setFastestInterval(0);
 //         ЗДЕСЬ ПОМЕНЯТЬ??
-//        mLocationRequest.setNumUpdates(1);
+        mLocationRequest.setNumUpdates(1);
 //        метраж добавить
 //        mLocationRequest.setSmallestDisplacement(50);
 
@@ -155,7 +156,7 @@ public class SendLocationActivity extends AppCompatActivity {
         // on FusedLocationClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-        addData();
+//        addData();
     }
 
     private LocationCallback mLocationCallback = new LocationCallback() {

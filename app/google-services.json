@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "921544484943",
+    "firebase_url": "https://locationtrackerparent-default-rtdb.firebaseio.com",
+    "project_id": "locationtrackerparent",
+    "storage_bucket": "locationtrackerparent.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921544484943:android:95eb61e80005509e87623a",
+        "android_client_info": {
+          "package_name": "com.shishkindenis.locationtracker_child"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921544484943-6de5eda1r3hf1sd5fbuam9pb5bck2g0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ-znhylmhp2SezTOjnca48UrdykN5WpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921544484943-6de5eda1r3hf1sd5fbuam9pb5bck2g0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921544484943:android:c1701166703c00fd87623a",
+        "android_client_info": {
+          "package_name": "com.shishkindenis.locationtracker_parent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "921544484943-ufjf00fnn73fv5mdk0k4r2s50c6lj0da.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shishkindenis.locationtracker_parent",
+            "certificate_hash": "a8d927a74f210ea1c80f533ac9bf22b4bc07f31c"
+          }
+        },
+        {
+          "client_id": "921544484943-6de5eda1r3hf1sd5fbuam9pb5bck2g0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ-znhylmhp2SezTOjnca48UrdykN5WpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "921544484943-6de5eda1r3hf1sd5fbuam9pb5bck2g0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
