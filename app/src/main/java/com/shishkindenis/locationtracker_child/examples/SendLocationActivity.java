@@ -1,6 +1,7 @@
 package com.shishkindenis.locationtracker_child.examples;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -33,11 +35,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.shishkindenis.locationtracker_child.R;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SendLocationActivity extends AppCompatActivity {
 
+//    GPS is caused by power Saver mode!
     //ДОБАВИТЬ КОД ДЛЯ ГЕОЛОКАЦИИ
 //    ПОПРОБОВАТЬ весь код по долготе-широте,но в этом проекте
 //    нужен ли getLastLocation -  оставить только Location.Request
@@ -67,6 +71,8 @@ public class SendLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_location);
 
+        Log.d("Location","onCreate");
+
         latitudeTextView = findViewById(R.id.latTextView);
         longitTextView = findViewById(R.id.lonTextView);
 
@@ -76,10 +82,11 @@ public class SendLocationActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        getLastLocation();
 
         locationMap = new HashMap<>();
         locationMap.put("geo", "location");
-        getLastLocation();
+
 
 //        btnGetLocation.setOnClickListener(v -> getLastLocation());
 //        getLastLocation();
@@ -122,7 +129,8 @@ public class SendLocationActivity extends AppCompatActivity {
                         locationMap.put("Latitude",location.getLatitude());
                         locationMap.put("Longitude",location.getLongitude());
 
-                        Log.d("Location", String.valueOf(location.getLatitude()));
+                        Log.d("Location","Else: " + String.valueOf(location.getLatitude()));
+//                        addData();
 
                     }
                 });
@@ -145,15 +153,15 @@ public class SendLocationActivity extends AppCompatActivity {
         // object with appropriate methods
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5);
-        mLocationRequest.setFastestInterval(0);
-//         ЗДЕСЬ ПОМЕНЯТЬ??
-        mLocationRequest.setNumUpdates(1);
-//        метраж добавить
-//        mLocationRequest.setSmallestDisplacement(50);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(5000);
+//        mLocationRequest.setSmallestDisplacement(60);
+//        mLocationRequest.setInterval(6000*10);
+//        mLocationRequest.setFastestInterval(6000*10);
 
-        // setting LocationRequest
-        // on FusedLocationClient
+
+
+//        УДАЛИТЬ
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
 //        addData();
@@ -161,13 +169,21 @@ public class SendLocationActivity extends AppCompatActivity {
 
     private LocationCallback mLocationCallback = new LocationCallback() {
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
 //            locationMap.put("Latitude2",mLastLocation.getLatitude());
-            Log.d("Location", String.valueOf(mLastLocation.getLatitude()));
-            latitudeTextView.setText("Latitude: " + mLastLocation.getLatitude() + "");
-            longitTextView.setText("Longitude: " + mLastLocation.getLongitude() + "");
+            Log.d("Location","Callback: " + String.valueOf(mLastLocation.getLatitude()));
+
+            locationMap.put("Latitude",mLastLocation.getLatitude());
+            locationMap.put("Longitude",mLastLocation.getLongitude());
+            locationMap.put("Date", LocalDate.now());
+//                        locationMap.put("Longitude",location.getLongitude());
+//            latitudeTextView.setText("Latitude: " + mLastLocation.getLatitude() + "");
+//            longitTextView.setText("Longitude: " + mLastLocation.getLongitude() + "");
+                    addData();
+//                    Пустые коллбеки шли постоянно
         }
     };
 
@@ -208,12 +224,41 @@ public class SendLocationActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (checkPermissions()) {
-//            getLastLocation();
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkPermissions()) {
+            getLastLocation();
+            Log.d("Location","onResume");
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("Location","onStart");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("Location","onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Location","onDestroy");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Location","onPause");
+
+    }
 
 }
