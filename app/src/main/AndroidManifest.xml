@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LocationTracker_Child">
+        <activity android:name=".activities.WelcomeActivity"></activity>
         <activity android:name=".EmailAuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,12 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".examples.SendLocationActivity">
-
-        </activity>
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".examples.SendLocationActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
