@@ -1,10 +1,5 @@
 package com.shishkindenis.locationtracker_child.examples;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,30 +7,30 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.shishkindenis.locationtracker_child.EmailAuthActivity;
 import com.shishkindenis.locationtracker_child.R;
 
-import java.time.LocalDate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,7 +96,9 @@ public class SendLocationActivity extends AppCompatActivity {
     }
 
     public void addData(){
-        db.collection("locationMap")
+//        db.collection(String.valueOf(EmailAuthActivity.email))
+//        db.collection("locationMap")
+        db.collection(EmailAuthActivity.userID)
                 .add(locationMap)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
@@ -128,6 +125,9 @@ public class SendLocationActivity extends AppCompatActivity {
                         longitTextView.setText(location.getLongitude() + "");
                         locationMap.put("Latitude",location.getLatitude());
                         locationMap.put("Longitude",location.getLongitude());
+
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        locationMap.put("Date",dateFormat.format(new Date()));
 
                         Log.d("Location","Else: " + String.valueOf(location.getLatitude()));
 //                        addData();
@@ -169,7 +169,7 @@ public class SendLocationActivity extends AppCompatActivity {
 
     private LocationCallback mLocationCallback = new LocationCallback() {
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
+
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
@@ -178,7 +178,10 @@ public class SendLocationActivity extends AppCompatActivity {
 
             locationMap.put("Latitude",mLastLocation.getLatitude());
             locationMap.put("Longitude",mLastLocation.getLongitude());
-            locationMap.put("Date", LocalDate.now());
+
+         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                locationMap.put("Date",dateFormat.format(new Date()));
+//
 //                        locationMap.put("Longitude",location.getLongitude());
 //            latitudeTextView.setText("Latitude: " + mLastLocation.getLatitude() + "");
 //            longitTextView.setText("Longitude: " + mLastLocation.getLongitude() + "");

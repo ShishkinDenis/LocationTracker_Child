@@ -1,14 +1,22 @@
 package com.shishkindenis.locationtracker_child.examples;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import java.time.LocalDate;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GetDate {
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void main(String[] args) {
-        System.out.println(LocalDate.now());
+//    public static Date getDateWithoutTimeUsingFormat()
+//            throws ParseException {
+//        SimpleDateFormat formatter = new SimpleDateFormat(
+//                "MM/dd/yyyy");
+//        return formatter.format();
+//    }
+
+    public static void main(String[] args) throws ParseException {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        System.out.println(dateFormat.format(new Date()));
     }
 }
