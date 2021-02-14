@@ -1,8 +1,8 @@
-package com.shishkindenis.locationtracker_child.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.shishkindenis.locationtracker_child.examples;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.shishkindenis.locationtracker_child.R;
 

@@ -1,14 +1,9 @@
-package com.shishkindenis.locationtracker_child;
+package com.shishkindenis.locationtracker_child.views;
 
 import moxy.MvpView;
 import moxy.viewstate.strategy.AddToEndSingleStrategy;
 import moxy.viewstate.strategy.StateStrategyType;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
-public interface SignInView extends MvpView {
-
-    void showError();
-
-    void checkEmail();
-    void checkPassword();
+public interface SendLocationView extends MvpView {
 }

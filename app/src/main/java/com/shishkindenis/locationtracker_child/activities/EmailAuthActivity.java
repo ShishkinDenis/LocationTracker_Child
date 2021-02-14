@@ -1,6 +1,4 @@
-package com.shishkindenis.locationtracker_child;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.shishkindenis.locationtracker_child.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -11,16 +9,18 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.databinding.ActivityEmailAuthBinding;
-import com.shishkindenis.locationtracker_child.examples.SendLocationActivity;
+import com.shishkindenis.locationtracker_child.presenters.EmailAuthPresenter;
+import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
 
-public class EmailAuthActivity extends MvpAppCompatActivity implements SignInView {
+public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuthView {
 
     @InjectPresenter
-    SignInPresenter signInPresenter;
+    EmailAuthPresenter emailAuthPresenter;
 
     private static final String TAG = "EmailPassword";
 
@@ -40,25 +40,23 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements SignInVie
         setContentView(view);
 
         mAuth = FirebaseAuth.getInstance();
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        userID = user.getUid();
 
         email = activityEmailAuthBinding.etEmail.getText().toString();
         password = activityEmailAuthBinding.etPassword.getText().toString();
 
 
         activityEmailAuthBinding.btnLogin.setOnClickListener(v -> {
+
             Toast toast = Toast.makeText(getApplicationContext(), "Действие",
                     Toast.LENGTH_SHORT);
             toast.show();
+
             checkEmail();
             checkPassword();
             activityEmailAuthBinding.etEmail.setError("f");
             showError();
         });
         activityEmailAuthBinding.btnRegister.setOnClickListener(v -> {
-//                createAccount(email,password);
-//                 createAccount("sh-kin@mail.ru","stalker");
             createAccount(activityEmailAuthBinding.etEmail.getText().toString(), activityEmailAuthBinding.etPassword.getText().toString());
         });
 

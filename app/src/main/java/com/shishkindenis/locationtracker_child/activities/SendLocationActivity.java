@@ -1,4 +1,4 @@
-package com.shishkindenis.locationtracker_child.examples;
+package com.shishkindenis.locationtracker_child.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,12 +11,10 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -25,8 +23,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.shishkindenis.locationtracker_child.EmailAuthActivity;
-import com.shishkindenis.locationtracker_child.R;
+import com.shishkindenis.locationtracker_child.databinding.ActivitySendLocationBinding;
+import com.shishkindenis.locationtracker_child.presenters.SendLocationPresenter;
+import com.shishkindenis.locationtracker_child.views.SendLocationView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,71 +33,50 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SendLocationActivity extends AppCompatActivity {
+import moxy.MvpAppCompatActivity;
+import moxy.presenter.InjectPresenter;
 
-//    GPS is caused by power Saver mode!
-    //ДОБАВИТЬ КОД ДЛЯ ГЕОЛОКАЦИИ
-//    ПОПРОБОВАТЬ весь код по долготе-широте,но в этом проекте
-//    нужен ли getLastLocation -  оставить только Location.Request
+public class SendLocationActivity extends MvpAppCompatActivity implements SendLocationView {
+
+    @InjectPresenter
+    SendLocationPresenter sendLocationPresenter;
+
+    private ActivitySendLocationBinding activitySendLocationBinding;
 
 
-    // initializing
-    // FusedLocationProviderClient
-    // object
     FusedLocationProviderClient mFusedLocationClient;
 
-    // Initializing other items
-    // from layout file
-//    TextView latitudeTextView, longitTextView;
     int PERMISSION_ID = 44;
 
-    TextView latitudeTextView, longitTextView;
 
     String TAG = "TAG";
-    FirebaseFirestore db;
+    FirebaseFirestore firestoreDataBase;
     Map<String, Object> locationMap;
 
-    Button btnGetLocation;
-    Button btnSendLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_location);
+
+        activitySendLocationBinding = ActivitySendLocationBinding.inflate(getLayoutInflater());
+        View view = activitySendLocationBinding.getRoot();
+        setContentView(view);
 
         Log.d("Location","onCreate");
 
-        latitudeTextView = findViewById(R.id.latTextView);
-        longitTextView = findViewById(R.id.lonTextView);
-
-        btnGetLocation = findViewById(R.id.btnGetLocation);
-        btnSendLocation = findViewById(R.id.btnSend);
-
-        db = FirebaseFirestore.getInstance();
-
+        firestoreDataBase = FirebaseFirestore.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
 
         locationMap = new HashMap<>();
         locationMap.put("geo", "location");
 
-
-//        btnGetLocation.setOnClickListener(v -> getLastLocation());
-//        getLastLocation();
-//        addData();
-        btnSendLocation.setOnClickListener(v -> addData());
-
-//        readData();
-
-
-// Add a new document with a generated ID
+        activitySendLocationBinding.btnSendLocation.setOnClickListener(v -> addData());
 
     }
 
     public void addData(){
-//        db.collection(String.valueOf(EmailAuthActivity.email))
-//        db.collection("locationMap")
-        db.collection(EmailAuthActivity.userID)
+        firestoreDataBase.collection(EmailAuthActivity.userID)
                 .add(locationMap)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
@@ -112,20 +90,17 @@ public class SendLocationActivity extends AppCompatActivity {
             // check if location is enabled
             if (isLocationEnabled()) {
 
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
+
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
                     Location location = task.getResult();
                     if (location == null) {
                         requestNewLocationData();
+
                     } else {
-                        latitudeTextView.setText(location.getLatitude() + "");
-                        longitTextView.setText(location.getLongitude() + "");
                         locationMap.put("Latitude",location.getLatitude());
                         locationMap.put("Longitude",location.getLongitude());
 
+                        //Вынести в метод
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         locationMap.put("Date",dateFormat.format(new Date()));
 
@@ -155,6 +130,7 @@ public class SendLocationActivity extends AppCompatActivity {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(5000);
+//        ПРИМЕНИТЬ ИНТЕРВАЛ
 //        mLocationRequest.setSmallestDisplacement(60);
 //        mLocationRequest.setInterval(6000*10);
 //        mLocationRequest.setFastestInterval(6000*10);
@@ -164,7 +140,7 @@ public class SendLocationActivity extends AppCompatActivity {
 //        УДАЛИТЬ
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-//        addData();
+
     }
 
     private LocationCallback mLocationCallback = new LocationCallback() {
@@ -173,20 +149,16 @@ public class SendLocationActivity extends AppCompatActivity {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
-//            locationMap.put("Latitude2",mLastLocation.getLatitude());
-            Log.d("Location","Callback: " + String.valueOf(mLastLocation.getLatitude()));
+
+            Log.d("Location","Callback: " + mLastLocation.getLatitude());
 
             locationMap.put("Latitude",mLastLocation.getLatitude());
             locationMap.put("Longitude",mLastLocation.getLongitude());
 
          DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 locationMap.put("Date",dateFormat.format(new Date()));
-//
-//                        locationMap.put("Longitude",location.getLongitude());
-//            latitudeTextView.setText("Latitude: " + mLastLocation.getLatitude() + "");
-//            longitTextView.setText("Longitude: " + mLastLocation.getLongitude() + "");
+
                     addData();
-//                    Пустые коллбеки шли постоянно
         }
     };
 
