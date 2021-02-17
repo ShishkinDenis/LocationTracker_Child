@@ -1,11 +1,20 @@
 package com.shishkindenis.locationtracker_child.activities;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,7 +26,10 @@ import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
 
+import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
+
 public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuthView {
+
 
     @InjectPresenter
     EmailAuthPresenter emailAuthPresenter;
@@ -32,6 +44,11 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
     private String password;
     public static String userID;
 
+//    boolean networkIsStopped;
+//    boolean gpsIsStopped;
+
+    private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +61,55 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
         email = activityEmailAuthBinding.etEmail.getText().toString();
         password = activityEmailAuthBinding.etPassword.getText().toString();
 
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        // API 24+
+        connectivityManager.registerDefaultNetworkCallback(new ConnectivityCallback());
+
+        IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
+        this.registerReceiver(locationSwitchStateReceiver, filter);
+
+
+
+//        LocationManager manager =
+//                (LocationManager) getSystemService(LOCATION_SERVICE);
+//
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//             TODO: Consider calling
+//                ActivityCompat#requestPermissions
+//             here to request the missing permissions, and then overriding
+//               public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                                      int[] grantResults)
+//             to handle the case where the user grants the permission. See the documentation
+//             for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        manager.registerGnssStatusCallback(gnssStatusListener);
+
+
+//        isOnline();
+//        ConnectivityManager conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+//mobile
+
+
+//        if(checkInternetPermissions()){
+//            Toast.makeText(getApplicationContext(), "Permission granted",
+//            Toast.LENGTH_SHORT).show();
+//        }
+//        else{
+//            requestInternetPermissions();
+//        }
+//
+//        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+//        requestInternetPermissions();
+//        requestPermissions();
+
+//    if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+//
+//   Toast.makeText(getApplicationContext(), "Не включено определение локации",
+//            Toast.LENGTH_SHORT).show();
+//}
 
         activityEmailAuthBinding.btnLogin.setOnClickListener(v -> {
 
@@ -230,5 +296,73 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
     }
 
 
+public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
+
+    @Override
+    public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+        boolean connected = networkCapabilities.hasCapability(NET_CAPABILITY_INTERNET);
+        Log.d("Net", Boolean.toString(connected));
+        Toast.makeText(getApplicationContext(), "Online",
+                Toast.LENGTH_LONG).show();
+
+
+    }
+
+    @Override
+    public void onLost(@NonNull Network network) {
+        Log.d("Net", "Связь потеряна");
+        Toast.makeText(getApplicationContext(), "Check internet connection",
+                Toast.LENGTH_LONG).show();
+//        networkIsStopped = true;
+    }
+}
+    private BroadcastReceiver locationSwitchStateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
+
+                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if (isGpsEnabled /* isNetworkEnabled*/) {
+                    //location is enabled
+                     Log.d("Connection","On");
+                    Toast.makeText(getApplicationContext(), "GPS turned on",
+                            Toast.LENGTH_LONG).show();
+
+                } else {
+                    //location is disabled
+                    Log.d("Connection","Off");
+                    Toast.makeText(getApplicationContext(), "GPS turned off",
+                            Toast.LENGTH_LONG).show();
+//                    gpsIsStopped = true;
+//                    if(networkIsStopped && gpsIsStopped){
+//                        Toast.makeText(getApplicationContext(), "impossible",
+//                                Toast.LENGTH_LONG).show();
+//                        Log.d("Connection","impossible");
+//                    }
+                }
+            }
+        }
+    };
+//    public final GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
+//        @Override
+//        public void onStarted() {
+//            Log.d("GPS","GPS started");
+//        }
+//
+//        @Override
+//        public void onStopped() {
+//            Log.d("GPS","GPS stopped");
+//        }
+//
+//        @Override
+//        public void onSatelliteStatusChanged(GnssStatus status) {
+//            Log.d("GPS","GPS started"+status.toString());
+//        }
+//    };
 
 }
