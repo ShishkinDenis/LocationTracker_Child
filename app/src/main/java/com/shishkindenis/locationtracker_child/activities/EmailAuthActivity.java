@@ -322,19 +322,13 @@ public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
         public void onReceive(Context context, Intent intent) {
 
             if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
-
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                 boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-                if (isGpsEnabled /* isNetworkEnabled*/) {
-                    //location is enabled
+                if (isGpsEnabled) {
                      Log.d("Connection","On");
                     Toast.makeText(getApplicationContext(), "GPS turned on",
                             Toast.LENGTH_LONG).show();
-
                 } else {
-                    //location is disabled
                     Log.d("Connection","Off");
                     Toast.makeText(getApplicationContext(), "GPS turned off",
                             Toast.LENGTH_LONG).show();
@@ -348,21 +342,4 @@ public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
             }
         }
     };
-//    public final GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
-//        @Override
-//        public void onStarted() {
-//            Log.d("GPS","GPS started");
-//        }
-//
-//        @Override
-//        public void onStopped() {
-//            Log.d("GPS","GPS stopped");
-//        }
-//
-//        @Override
-//        public void onSatelliteStatusChanged(GnssStatus status) {
-//            Log.d("GPS","GPS started"+status.toString());
-//        }
-//    };
-
 }
