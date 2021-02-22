@@ -67,6 +67,9 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
 
         OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
         WorkManager.getInstance().enqueue(myWorkRequest);
+//
+//        sendLocationPresenter.work();
+
 //        getLocation();
 //        startService(new Intent(this, LocationService.class));
     }
@@ -89,10 +92,10 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
 //        someTask();
         requestNewLocationData(mFusedLocationClient);
     }
-    private boolean checkPermissions() {
+    public boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
-    private boolean isLocationEnabled() {
+    public boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
@@ -115,7 +118,8 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     }
 
     public void addData() {
-        firestoreDataBase.collection(EmailAuthActivity.userID)
+//        firestoreDataBase.collection(EmailAuthActivity.userID)
+        firestoreDataBase.collection(MainActivity.userID)
                 .add(locationMap)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));

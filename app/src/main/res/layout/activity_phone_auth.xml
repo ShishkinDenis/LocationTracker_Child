@@ -11,63 +11,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="43dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/btnVerifyCode"
+        app:layout_constraintTop_toBottomOf="@+id/btnRequestCode" />
 
     <Button
         android:id="@+id/btnSignOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="69dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="37dp"
         android:text="SignOut"
-        app:layout_constraintBottom_toTopOf="@+id/titleText"
-        app:layout_constraintEnd_toEndOf="@+id/btnVerify"
-        app:layout_constraintStart_toStartOf="@+id/btnStart" />
-
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="11dp"
-        android:layout_marginBottom="34dp"
-        android:text="titleText"
-        app:layout_constraintBottom_toTopOf="@+id/status"
-        app:layout_constraintStart_toEndOf="@+id/status" />
-
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="102dp"
-        android:layout_marginBottom="51dp"
-        android:text="status"
-        app:layout_constraintBottom_toTopOf="@+id/detail"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="229dp"
-        android:text="detail"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/status" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="77dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:ems="10"
         android:hint="Phone number"
-        android:inputType="textPersonName"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,29 +43,30 @@
         android:id="@+id/etVerificationCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
         android:ems="10"
         android:hint="Verification code"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/etPhoneNumber"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/etPhoneNumber"
         app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber" />
 
     <Button
-        android:id="@+id/btnVerify"
+        android:id="@+id/btnVerifyCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="62dp"
-        android:layout_marginTop="32dp"
-        android:text="Verify"
-        app:layout_constraintStart_toEndOf="@+id/btnStart"
-        app:layout_constraintTop_toBottomOf="@+id/etVerificationCode" />
+        android:text="Verify Code"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnRequestCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnRequestCode" />
 
     <Button
-        android:id="@+id/btnStart"
+        android:id="@+id/btnRequestCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
         android:layout_marginTop="32dp"
-        android:text="Start"
-        app:layout_constraintStart_toStartOf="@+id/etVerificationCode"
+        android:layout_marginEnd="3dp"
+        android:text="Request Code"
+        app:layout_constraintEnd_toStartOf="@+id/btnVerifyCode"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etVerificationCode" />
 </androidx.constraintlayout.widget.ConstraintLayout>

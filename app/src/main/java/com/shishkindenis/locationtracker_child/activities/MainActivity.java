@@ -31,10 +31,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-//                        if user !=null
-        userID = user.getUid();
+
+//        userID = user.getUid();
 
         if (user != null) {
+            userID = user.getUid();
             goToAnotherActivity(SendLocationActivity.class,"abc", "abc");
         }
 

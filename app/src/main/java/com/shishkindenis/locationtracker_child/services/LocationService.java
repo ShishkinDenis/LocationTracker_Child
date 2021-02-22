@@ -1,30 +1,8 @@
 package com.shishkindenis.locationtracker_child.services;
 
-import android.annotation.SuppressLint;
-import android.app.Service;
-import android.content.Intent;
-import android.location.Location;
-import android.os.IBinder;
-import android.os.Looper;
-import android.util.Log;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.shishkindenis.locationtracker_child.activities.EmailAuthActivity;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-public class LocationService extends Service {
-    FusedLocationProviderClient mFusedLocationClient;
+//Удалить класс
+/*public class LocationService extends Service {
+   /* FusedLocationProviderClient mFusedLocationClient;
     String TAG = "TAG";
     FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     Map<String, Object> locationMap = new HashMap<>();
@@ -123,4 +101,4 @@ public class LocationService extends Service {
             Log.d("Location","TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
         }
     };
-}
+}*/

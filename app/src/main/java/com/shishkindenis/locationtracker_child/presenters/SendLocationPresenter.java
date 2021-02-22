@@ -2,7 +2,11 @@ package com.shishkindenis.locationtracker_child.presenters;
 
 import android.util.Log;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
+import com.shishkindenis.locationtracker_child.workers.LocationWorker;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +15,16 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
+
+
+    public SendLocationPresenter() {
+
+    }
+
+    public void work(){
+        OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
+        WorkManager.getInstance().enqueue(myWorkRequest);
+    }
 
 //    String TAG = "TAG";
 //    FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();

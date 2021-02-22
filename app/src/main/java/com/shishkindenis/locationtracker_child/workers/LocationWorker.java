@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class LocationWorker extends Worker {
 
@@ -33,6 +34,7 @@ public class LocationWorker extends Worker {
     FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     Map<String, Object> locationMap = new HashMap<>();
     String time;
+    int PERMISSION_ID = 44;
 
 
 
@@ -47,14 +49,21 @@ public class LocationWorker extends Worker {
     public Result doWork() {
 //        заменить на RX
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(this::getLocation);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                LocationWorker.this.getLocation();
+            }
+        });
+        someTask();
         return Result.success();
     }
 
     public void getLocation(){
 //        if (checkPermissions()) {
 //            if (isLocationEnabled()) {
-//                sendLocationPresenter.requestNewLocationData(mFusedLocationClient);
+//
+//        requestNewLocationData(mFusedLocationClient);
 //            }
 //            else {
 //                showToast("Please turn on detection of location");
@@ -65,8 +74,7 @@ public class LocationWorker extends Worker {
 //            requestPermissions();
 //        }
 
-//        sendLocationPresenter.someTask();
-//        someTask();
+
         requestNewLocationData(mFusedLocationClient);
     }
 
@@ -84,19 +92,11 @@ public class LocationWorker extends Worker {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(6000);
         mLocationRequest.setFastestInterval(6000);
+//        TODO установить в оконччательном коммите
 //        mLocationRequest.setSmallestDisplacement(60);
-//        mLocationRequest.setInterval(6000*10);
-//        mLocationRequest.setFastestInterval(6000*10);
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
+//        mLocationRequest.setInterval(60000*10);
+//        mLocationRequest.setFastestInterval(60000*10);
+
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
@@ -116,4 +116,24 @@ public class LocationWorker extends Worker {
             Log.d("Location","TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
         }
     };
+
+//    public boolean checkPermissions() {
+//        return ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+//    }
+//    public boolean isLocationEnabled() {
+//        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//    }
+void someTask() {
+    new Thread(() -> {
+        for (int i = 1; i<=5; i++) {
+            Log.d(TAG, "i = " + i);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }).start();
+}
 }
