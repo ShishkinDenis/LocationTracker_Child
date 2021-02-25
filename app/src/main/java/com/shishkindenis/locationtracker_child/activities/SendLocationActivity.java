@@ -7,13 +7,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -23,7 +27,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.databinding.ActivitySendLocationBinding;
 import com.shishkindenis.locationtracker_child.presenters.SendLocationPresenter;
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
@@ -35,7 +41,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
@@ -45,10 +50,14 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
 
-    private ActivitySendLocationBinding activitySendLocationBinding;
+    private ActivitySendLocationBinding binding;
     FusedLocationProviderClient mFusedLocationClient;
-//    44?
-    int PERMISSION_ID = 44;
+    final static String LONGITUDE_FIELD = "Longitude";
+    final static String LATITUDE_FIELD = "Latitude";
+    final static String TIME_FIELD = "Time";
+    final static String DATE_FIELD = "Date";
+    int PERMISSION_ID = 1;
+    private String datePattern = "yyyy-MM-dd";
 
 
     String TAG = "TAG";
@@ -59,11 +68,14 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activitySendLocationBinding = ActivitySendLocationBinding.inflate(getLayoutInflater());
-        View view = activitySendLocationBinding.getRoot();
+        binding = ActivitySendLocationBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
         setContentView(view);
+        setSupportActionBar(binding.toolbar);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        requestIgnoringBatteryOptimizations();
 
         OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
         WorkManager.getInstance().enqueue(myWorkRequest);
@@ -118,8 +130,7 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     }
 
     public void addData() {
-//        firestoreDataBase.collection(EmailAuthActivity.userID)
-        firestoreDataBase.collection(MainActivity.userID)
+        firestoreDataBase.collection(MainActivity.getUserID())
                 .add(locationMap)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
@@ -129,8 +140,8 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     public void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(30000);
+        mLocationRequest.setFastestInterval(30000);
 //        mLocationRequest.setSmallestDisplacement(60);
 //        mLocationRequest.setInterval(6000*10);
 //        mLocationRequest.setFastestInterval(6000*10);
@@ -151,31 +162,32 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
         @Override
         public void onLocationResult(LocationResult locationResult) {
             //Вынести в метод
-            Location mLastLocation = locationResult.getLastLocation();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            time = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date());
-
-            locationMap.put("Latitude",mLastLocation.getLatitude());
-            locationMap.put("Longitude",mLastLocation.getLongitude());
-            locationMap.put("Date",dateFormat.format(new Date()));
-            locationMap.put("Time",time);
+//            Location mLastLocation = locationResult.getLastLocation();
+//
+//            DateFormat dateFormat = new SimpleDateFormat(datePattern);
+//            time = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date());
+//            locationMap.put(LATITUDE_FIELD,mLastLocation.getLatitude());
+//            locationMap.put(LONGITUDE_FIELD,mLastLocation.getLongitude());
+//            locationMap.put(DATE_FIELD,dateFormat.format(new Date()));
+//            locationMap.put(TIME_FIELD,time);
+            getPosition(locationResult);
             addData();
             Log.d("Location","TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
         }
     };
 
-   public void someTask() {
-        new Thread(() -> {
-            for (int i = 1; i<=5; i++) {
-                Log.d("LOG", "i = " + i);
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
+//   public void someTask() {
+//        new Thread(() -> {
+//            for (int i = 1; i<=5; i++) {
+//                Log.d("LOG", "i = " + i);
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
 
 
 
@@ -271,4 +283,50 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
 //            Log.d("Location","TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
 //        }
 //    };
+
+    public void requestIgnoringBatteryOptimizations() {
+        Intent intent = new
+                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+    }
+
+    public void getPosition(LocationResult locationResult){
+        Location mLastLocation = locationResult.getLastLocation();
+        DateFormat dateFormat = new SimpleDateFormat(datePattern);
+        time = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date());
+        locationMap.put(LATITUDE_FIELD,mLastLocation.getLatitude());
+        locationMap.put(LONGITUDE_FIELD,mLastLocation.getLongitude());
+        locationMap.put(DATE_FIELD,dateFormat.format(new Date()));
+        locationMap.put(TIME_FIELD,time);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        signOut();
+        goToAnotherActivity(MainActivity.class);
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void signOut() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.signOut();
+        showToast(R.string.sign_out_successful);
+    }
+
+    public void goToAnotherActivity(Class activity) {
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+    }
+
+    public void showToast(int toastMessage) {
+        Toast.makeText(getApplicationContext(), toastMessage,
+                Toast.LENGTH_LONG).show();
+    }
 }

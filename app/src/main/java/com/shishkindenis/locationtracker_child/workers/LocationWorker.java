@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class LocationWorker extends Worker {
 
@@ -34,13 +33,10 @@ public class LocationWorker extends Worker {
     FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     Map<String, Object> locationMap = new HashMap<>();
     String time;
-    int PERMISSION_ID = 44;
-
-
+    int PERMISSION_ID = 1;
 
     public LocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
@@ -55,7 +51,7 @@ public class LocationWorker extends Worker {
                 LocationWorker.this.getLocation();
             }
         });
-        someTask();
+//        someTask();
         return Result.success();
     }
 
@@ -79,8 +75,7 @@ public class LocationWorker extends Worker {
     }
 
     public void addData() {
-//        firestoreDataBase.collection(EmailAuthActivity.userID)
-        firestoreDataBase.collection(MainActivity.userID)
+        firestoreDataBase.collection(MainActivity.getUserID())
                 .add(locationMap)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
@@ -124,16 +119,16 @@ public class LocationWorker extends Worker {
 //        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 //        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 //    }
-void someTask() {
-    new Thread(() -> {
-        for (int i = 1; i<=5; i++) {
-            Log.d(TAG, "i = " + i);
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }).start();
-}
+//void someTask() {
+//    new Thread(() -> {
+//        for (int i = 1; i<=5; i++) {
+//            Log.d(TAG, "i = " + i);
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }).start();
+//}
 }

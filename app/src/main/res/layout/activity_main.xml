@@ -8,23 +8,116 @@
 
     <Button
         android:id="@+id/btnEmail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="103dp"
-        android:layout_marginBottom="105dp"
-        android:text="Email"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/email"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/btnPhone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.909" />
 
     <Button
         android:id="@+id/btnPhone"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="256dp"
-        android:text="Phone"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="472dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/phone"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/btnEmail"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
+        android:text="@string/tv_welcome"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvLocationTracker"
+        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintStart_toStartOf="@+id/tvLocationTracker"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocationTracker" />
+
+    <TextView
+        android:id="@+id/tvLocationTracker"
+        android:layout_width="298dp"
+        android:layout_height="52dp"
+        android:text="@string/location_tracker"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.068" />
+
+    <TextView
+        android:id="@+id/tvChooseTheWayOfSigning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/please_choose_the_way_of_signing_in"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvWelcome"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@+id/tvWelcome"
+        app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="45dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnEmail"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@drawable/ic_baseline_email_24" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="49dp"
+        android:layout_height="38dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnPhone"
+        app:layout_constraintEnd_toStartOf="@+id/btnPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnPhone"
+        tools:srcCompat="@drawable/ic_baseline_phone_android_24" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="59dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="44dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/tvLocationTracker"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/map" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="184dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center|center_horizontal"
+        android:text="@string/child_edition"
+        android:textColor="@color/green"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tvLocationTracker"
+        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintStart_toStartOf="@+id/tvLocationTracker"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocationTracker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

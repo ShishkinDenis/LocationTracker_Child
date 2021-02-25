@@ -7,4 +7,6 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
+    public PhoneAuthPresenter() {
+    }
 }
