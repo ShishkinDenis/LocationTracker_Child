@@ -1,23 +1,11 @@
 package com.shishkindenis.locationtracker_child.activities;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.databinding.ActivityEmailAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.EmailAuthPresenter;
@@ -25,8 +13,6 @@ import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
-
-import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 
 public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuthView {
 
@@ -60,7 +46,6 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
                 binding.pbEmailAuth.setVisibility(View.INVISIBLE);
             }
         });
-//        binding.btnSignOut.setOnClickListener(v -> emailAuthPresenter.signOut(auth));
     }
 
     public void goToAnotherActivity(Class activity) {

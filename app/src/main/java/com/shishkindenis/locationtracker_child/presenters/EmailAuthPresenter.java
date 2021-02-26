@@ -3,6 +3,7 @@ package com.shishkindenis.locationtracker_child.presenters;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.R;
+import com.shishkindenis.locationtracker_child.activities.MainActivity;
 import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
 import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 
@@ -30,7 +31,9 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+//                        или user из MainActivity???
                         FirebaseUser user = auth.getCurrentUser();
+                        MainActivity.userID = user.getUid();
                         getViewState().showToast(R.string.authentication_successful);
                         getViewState().goToAnotherActivity(SendLocationActivity.class);
                     } else {
@@ -38,15 +41,5 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
                     }
                 });
     }
-
-//    public void signOut(FirebaseAuth auth) {
-//        if(auth.getCurrentUser() != null) {
-//            auth.signOut();
-//            getViewState().showToast(R.string.sign_out_successful);
-//        }
-//        else {
-//            getViewState().showToast(R.string.you_havent_sign_in);
-//        }
-//    }
 
 }

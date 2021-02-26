@@ -16,9 +16,7 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
 
-
     public SendLocationPresenter() {
-
     }
 
     public void work(){

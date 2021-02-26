@@ -20,7 +20,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     private ActivityMainBinding activityMainBinding;
     private FirebaseAuth mAuth;
-    private static String userID;
+    public static String userID;
+    public static FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         setContentView(view);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
 
         if (user != null) {
             userID = user.getUid();
@@ -45,7 +46,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         return userID;
     }
 
-    public void goToAnotherActivity(Class activity){
+    public void goToAnotherActivity(Class activity) {
         Intent intent = new Intent(this, activity);
         startActivity(intent);
     }

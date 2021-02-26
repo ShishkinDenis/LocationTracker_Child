@@ -19,14 +19,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.909" />
+        app:layout_constraintVertical_bias="0.941" />
 
     <Button
         android:id="@+id/btnPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="472dp"
+        android:layout_marginTop="288dp"
         android:layout_marginEnd="16dp"
         android:text="@string/phone"
         android:textColor="#FFFFFF"
@@ -39,11 +39,11 @@
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="60dp"
         android:text="@string/tv_welcome"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="@+id/tvLocationTracker"
-        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintHorizontal_bias="0.392"
         app:layout_constraintStart_toStartOf="@+id/tvLocationTracker"
         app:layout_constraintTop_toBottomOf="@+id/tvLocationTracker" />
 
@@ -55,20 +55,19 @@
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.791"
+        app:layout_constraintHorizontal_bias="0.535"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.068" />
+        app:layout_constraintVertical_bias="0.041" />
 
     <TextView
         android:id="@+id/tvChooseTheWayOfSigning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/please_choose_the_way_of_signing_in"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/tvWelcome"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="@+id/tvWelcome"
         app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
@@ -97,10 +96,10 @@
         android:id="@+id/imageButton"
         android:layout_width="59dp"
         android:layout_height="55dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@+id/tvLocationTracker"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.898"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/map" />
@@ -109,14 +108,14 @@
         android:id="@+id/textView"
         android:layout_width="184dp"
         android:layout_height="43dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:gravity="center|center_horizontal"
         android:text="@string/child_edition"
         android:textColor="@color/green"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tvLocationTracker"
-        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintHorizontal_bias="0.377"
         app:layout_constraintStart_toStartOf="@+id/tvLocationTracker"
         app:layout_constraintTop_toBottomOf="@+id/tvLocationTracker" />
 
