@@ -31,7 +31,7 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
         setContentView(view);
 
         binding.btnRegister.setOnClickListener(v -> {
-            if (validateForm()){
+            if (validateForm()) {
                 binding.pbEmailAuth.setVisibility(View.VISIBLE);
                 emailAuthPresenter.createAccount(auth, binding.etEmail.getText().toString(),
                         binding.etPassword.getText().toString());
@@ -39,7 +39,7 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
             }
         });
         binding.btnLogin.setOnClickListener(v -> {
-            if(validateForm()){
+            if (validateForm()) {
                 binding.pbEmailAuth.setVisibility(View.VISIBLE);
                 emailAuthPresenter.signIn(auth, binding.etEmail.getText().toString(),
                         binding.etPassword.getText().toString());

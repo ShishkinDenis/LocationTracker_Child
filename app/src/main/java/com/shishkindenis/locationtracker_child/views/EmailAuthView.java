@@ -5,7 +5,7 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy;
 import moxy.viewstate.strategy.StateStrategyType;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
-public interface  EmailAuthView extends MvpView {
+public interface EmailAuthView extends MvpView {
 
     void goToAnotherActivity(Class activity);
 

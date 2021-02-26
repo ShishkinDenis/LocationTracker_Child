@@ -1,15 +1,6 @@
 package com.shishkindenis.locationtracker_child.examples;
 
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
-
-public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
+/*public class ConnectivityCallback extends ConnectivityManager.NetworkCallback {
 //   SendLocationActivity sendLocationActivity = new SendLocationActivity(this);
 
     @Override
@@ -19,6 +10,7 @@ public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
         Log.d("Net", Boolean.toString(connected));
 //        Toast.makeText(getApplicationContext(), "f",
 //                Toast.LENGTH_LONG).show();
+        SendLocationActivity.networkStatusOn = true;
 
     }
 
@@ -27,5 +19,9 @@ public class ConnectivityCallback extends ConnectivityManager.NetworkCallback{
         super.onLost(network);
         Log.d("Net", "Связь потеряна");
 //        sendLocationActivity.showToast("Отключено");
+        SendLocationActivity.networkStatusOn = false;
+        if(!SendLocationActivity.gpsStatusOn){
+            Log.d("Net", "Detection is impossible");
+        }
     }
-}
+}*/

@@ -7,34 +7,40 @@
     tools:context=".activities.SendLocationActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="244dp"
-        android:layout_marginEnd="156dp"
-        android:text="Sharing location in process"
+        android:text="Location determination : OFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.259"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvGpsStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="36dp"
-        android:text="GPS status"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintEnd_toEndOf="@+id/textView3" />
+        android:layout_marginTop="36dp"
+        android:text="GPS status : OFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvProgress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvProgress"
+        app:layout_constraintTop_toBottomOf="@+id/tvProgress" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvNetworkStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="424dp"
-        android:layout_marginEnd="228dp"
-        android:text="Network status"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="36dp"
+        android:text="Network status : OFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvGpsStatus"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvGpsStatus"
+        app:layout_constraintTop_toBottomOf="@+id/tvGpsStatus" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -48,5 +54,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/tvConnectionInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connection information"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.254" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

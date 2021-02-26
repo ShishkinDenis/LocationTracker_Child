@@ -15,13 +15,16 @@ import moxy.presenter.InjectPresenter;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
-    @InjectPresenter
-    MainPresenter mainPresenter;
-
-    private ActivityMainBinding activityMainBinding;
-    private FirebaseAuth mAuth;
     public static String userID;
     public static FirebaseUser user;
+    @InjectPresenter
+    MainPresenter mainPresenter;
+    private ActivityMainBinding activityMainBinding;
+    private FirebaseAuth mAuth;
+
+    public static String getUserID() {
+        return userID;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +43,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         activityMainBinding.btnEmail.setOnClickListener(v -> goToAnotherActivity(EmailAuthActivity.class));
         activityMainBinding.btnPhone.setOnClickListener(v -> goToAnotherActivity(PhoneAuthActivity.class));
-    }
-
-    public static String getUserID() {
-        return userID;
     }
 
     public void goToAnotherActivity(Class activity) {

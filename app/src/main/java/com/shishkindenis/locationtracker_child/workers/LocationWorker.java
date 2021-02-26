@@ -33,7 +33,11 @@ public class LocationWorker extends Worker {
     FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     Map<String, Object> locationMap = new HashMap<>();
     String time;
-    int PERMISSION_ID = 1;
+    final static String LONGITUDE_FIELD = "Longitude";
+    final static String LATITUDE_FIELD = "Latitude";
+    final static String TIME_FIELD = "Time";
+    final static String DATE_FIELD = "Date";
+    private final String datePattern = "yyyy-MM-dd";
 
     public LocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -45,33 +49,27 @@ public class LocationWorker extends Worker {
     public Result doWork() {
 //        заменить на RX
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                LocationWorker.this.getLocation();
-            }
-        });
-//        someTask();
+        handler.post(this::getLocation);
         return Result.success();
     }
 
-    public void getLocation(){
-//        if (checkPermissions()) {
-//            if (isLocationEnabled()) {
-//
-//        requestNewLocationData(mFusedLocationClient);
-//            }
-//            else {
-//                showToast("Please turn on detection of location");
-//                showLocationSourceSettings();
-//            }
-//        }
-//        else {
-//            requestPermissions();
-//        }
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            getPosition(locationResult);
+            addData();
+            Log.d("Location", "TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
+        }
+    };
 
-
-        requestNewLocationData(mFusedLocationClient);
+    public void getPosition(LocationResult locationResult) {
+        Location mLastLocation = locationResult.getLastLocation();
+        DateFormat dateFormat = new SimpleDateFormat(datePattern);
+        time = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date());
+        locationMap.put(LATITUDE_FIELD, mLastLocation.getLatitude());
+        locationMap.put(LONGITUDE_FIELD, mLastLocation.getLongitude());
+        locationMap.put(DATE_FIELD, dateFormat.format(new Date()));
+        locationMap.put(TIME_FIELD, time);
     }
 
     public void addData() {
@@ -81,54 +79,21 @@ public class LocationWorker extends Worker {
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
     }
 
-    @SuppressLint("MissingPermission")
-    public void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(6000);
-        mLocationRequest.setFastestInterval(6000);
+    public void getLocation() {
+            requestNewLocationData(mFusedLocationClient);
+        }
+
+        @SuppressLint("MissingPermission")
+        public void requestNewLocationData (FusedLocationProviderClient mFusedLocationClient){
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(60000);
+            mLocationRequest.setFastestInterval(60000);
 //        TODO установить в оконччательном коммите
 //        mLocationRequest.setSmallestDisplacement(60);
 //        mLocationRequest.setInterval(60000*10);
 //        mLocationRequest.setFastestInterval(60000*10);
-
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            //Вынести в метод
-            Location mLastLocation = locationResult.getLastLocation();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            time = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date());
-
-            locationMap.put("Latitude",mLastLocation.getLatitude());
-            locationMap.put("Longitude",mLastLocation.getLongitude());
-            locationMap.put("Date",dateFormat.format(new Date()));
-            locationMap.put("Time",time);
-            addData();
-            Log.d("Location","TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         }
-    };
 
-//    public boolean checkPermissions() {
-//        return ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-//    }
-//    public boolean isLocationEnabled() {
-//        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//    }
-//void someTask() {
-//    new Thread(() -> {
-//        for (int i = 1; i<=5; i++) {
-//            Log.d(TAG, "i = " + i);
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }).start();
-//}
 }

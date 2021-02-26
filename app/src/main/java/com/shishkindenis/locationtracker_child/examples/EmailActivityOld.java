@@ -321,3 +321,16 @@ package com.shishkindenis.locationtracker_child.examples;
 
 
  */
+
+//   public void someTask() {
+//        new Thread(() -> {
+//            for (int i = 1; i<=5; i++) {
+//                Log.d("LOG", "i = " + i);
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
