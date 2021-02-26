@@ -54,7 +54,6 @@ public class PhoneAuthActivity extends MvpAppCompatActivity implements PhoneAuth
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
 
-
         phoneAuthPresenter.callback();
     }
 

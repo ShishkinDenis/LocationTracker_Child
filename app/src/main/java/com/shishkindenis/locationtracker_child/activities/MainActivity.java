@@ -15,10 +15,12 @@ import moxy.presenter.InjectPresenter;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
-    public static String userID;
-    public static FirebaseUser user;
     @InjectPresenter
     MainPresenter mainPresenter;
+
+// TODO:getter
+    public static String userID;
+    public static FirebaseUser user;
     private ActivityMainBinding activityMainBinding;
     private FirebaseAuth mAuth;
 

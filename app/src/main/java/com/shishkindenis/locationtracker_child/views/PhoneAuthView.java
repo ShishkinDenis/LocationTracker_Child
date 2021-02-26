@@ -15,5 +15,4 @@ public interface PhoneAuthView extends MvpView {
     void showInvalidPhoneNumberError();
 
     void showInvalidCodeError();
-
 }

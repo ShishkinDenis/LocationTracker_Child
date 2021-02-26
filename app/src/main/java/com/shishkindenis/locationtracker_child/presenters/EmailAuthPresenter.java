@@ -13,8 +13,7 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
 
-    public EmailAuthPresenter() {
-    }
+    public EmailAuthPresenter() { }
 
     public void createAccount(FirebaseAuth auth, String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -41,5 +40,4 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
                     }
                 });
     }
-
 }

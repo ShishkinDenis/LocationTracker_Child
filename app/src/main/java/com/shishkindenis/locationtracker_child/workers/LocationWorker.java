@@ -28,16 +28,25 @@ import java.util.Map;
 
 public class LocationWorker extends Worker {
 
-    FusedLocationProviderClient mFusedLocationClient;
-    String TAG = "TAG";
-    FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
-    Map<String, Object> locationMap = new HashMap<>();
-    String time;
     final static String LONGITUDE_FIELD = "Longitude";
     final static String LATITUDE_FIELD = "Latitude";
     final static String TIME_FIELD = "Time";
     final static String DATE_FIELD = "Date";
     private final String datePattern = "yyyy-MM-dd";
+    FusedLocationProviderClient mFusedLocationClient;
+    String TAG = "TAG";
+    FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
+    Map<String, Object> locationMap = new HashMap<>();
+    String time;
+
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            getPosition(locationResult);
+            addData();
+            Log.d("Location", "TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
+        }
+    };
 
     public LocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -48,19 +57,16 @@ public class LocationWorker extends Worker {
     @Override
     public Result doWork() {
 //        заменить на RX
+//        Observable.create(o -> getLocation())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe();
+
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(this::getLocation);
+
         return Result.success();
     }
-
-    private final LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            getPosition(locationResult);
-            addData();
-            Log.d("Location", "TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
-        }
-    };
 
     public void getPosition(LocationResult locationResult) {
         Location mLastLocation = locationResult.getLastLocation();
@@ -80,20 +86,20 @@ public class LocationWorker extends Worker {
     }
 
     public void getLocation() {
-            requestNewLocationData(mFusedLocationClient);
-        }
+        requestNewLocationData(mFusedLocationClient);
+    }
 
-        @SuppressLint("MissingPermission")
-        public void requestNewLocationData (FusedLocationProviderClient mFusedLocationClient){
-            LocationRequest mLocationRequest = new LocationRequest();
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            mLocationRequest.setInterval(60000);
-            mLocationRequest.setFastestInterval(60000);
+    @SuppressLint("MissingPermission")
+    public void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(60000);
 //        TODO установить в оконччательном коммите
 //        mLocationRequest.setSmallestDisplacement(60);
 //        mLocationRequest.setInterval(60000*10);
 //        mLocationRequest.setFastestInterval(60000*10);
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-        }
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
 
 }

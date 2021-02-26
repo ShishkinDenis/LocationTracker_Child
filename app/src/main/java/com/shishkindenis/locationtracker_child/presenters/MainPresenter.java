@@ -8,6 +8,5 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
 
-    public MainPresenter() {
-    }
+    public MainPresenter() {}
 }

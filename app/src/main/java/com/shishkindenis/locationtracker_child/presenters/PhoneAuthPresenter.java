@@ -78,6 +78,5 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
         signInWithPhoneAuthCredential(credential);
     }
 
-
 }
 
