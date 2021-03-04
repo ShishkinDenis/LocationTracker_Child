@@ -36,14 +36,13 @@
     <string name="verify_code">Verify Code</string>
     <string name="request_code">Request Code</string>
     <string name="child_edition">Child edition</string>
-    <string name="turn_on_detection_of_location">Please turn on detection of location</string>
-    <string name="location_detection">Location detection is impossible</string>
+    <string name="turn_on_determination_of_location">Please turn on determination of location</string>
+    <string name="location_determination">Location detection is impossible</string>
     <string name="location_determination_is_impossible">Location determination is impossible. Please turn on GPS or network connection</string>
     <string name="gps_status_on">GPS status : ON</string>
     <string name="location_determination_in_progress">Location determination : In progress</string>
     <string name="gps_status_off">GPS status : OFF</string>
     <string name="location_determination_off">Location determination : OFF</string>
     <string name="network_status_on">Network status : ON</string>
-    <string name="location_determination">Location determination : In progress</string>
     <string name="network_status_off">Network status : OFF</string>
 </resources>

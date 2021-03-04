@@ -1,30 +1,32 @@
 package com.shishkindenis.locationtracker_child.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.shishkindenis.locationtracker_child.R;
+import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityPhoneAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.PhoneAuthPresenter;
 import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
 
 import java.util.concurrent.TimeUnit;
 
-import moxy.MvpAppCompatActivity;
+import javax.inject.Inject;
+
 import moxy.presenter.InjectPresenter;
 
-public class PhoneAuthActivity extends MvpAppCompatActivity implements PhoneAuthView {
+public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
     @InjectPresenter
     PhoneAuthPresenter phoneAuthPresenter;
 
+    @Inject
+    FirebaseAuth auth;
+
     private ActivityPhoneAuthBinding binding;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class PhoneAuthActivity extends MvpAppCompatActivity implements PhoneAuth
         View view = binding.getRoot();
         setContentView(view);
 
-        auth = FirebaseAuth.getInstance();
+        MyApplication.appComponent.inject(this);
 
         binding.btnRequestCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
@@ -47,14 +49,22 @@ public class PhoneAuthActivity extends MvpAppCompatActivity implements PhoneAuth
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
             if (validateCode()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
-
-                        phoneAuthPresenter.mVerificationId, binding.etVerificationCode.getText().toString());
-
+                        binding.etVerificationCode.getText().toString());
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
-
+        //поставить в качестве параметра auth?
         phoneAuthPresenter.callback();
+    }
+
+    @Override
+    public void showToast(int toastMessage) {
+        super.showToast(toastMessage);
+    }
+
+    @Override
+    public void goToAnotherActivity(Class activity) {
+        super.goToAnotherActivity(activity);
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
@@ -87,17 +97,7 @@ public class PhoneAuthActivity extends MvpAppCompatActivity implements PhoneAuth
         return true;
     }
 
-    @Override
-    public void goToAnotherActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
-    }
 
-    @Override
-    public void showToast(int toastMessage) {
-        Toast.makeText(getApplicationContext(), toastMessage,
-                Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public void enableVerifyButton() {

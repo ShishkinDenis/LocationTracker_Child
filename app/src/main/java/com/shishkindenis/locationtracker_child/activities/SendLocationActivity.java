@@ -18,34 +18,32 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.databinding.ActivitySendLocationBinding;
 import com.shishkindenis.locationtracker_child.presenters.SendLocationPresenter;
+import com.shishkindenis.locationtracker_child.services.ForegroundService;
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
 
-import java.util.Observable;
-
-import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
 
 import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 
-public class SendLocationActivity extends MvpAppCompatActivity implements SendLocationView {
+public class SendLocationActivity extends BaseActivity implements SendLocationView {
 
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
-    FusedLocationProviderClient mFusedLocationClient;
 
-    public static boolean networkStatusOn;
-    public static boolean gpsStatusOn;
-    int PERMISSION_ID = 1;
+    private FusedLocationProviderClient fusedLocationClient;
+    private boolean networkStatusOn;
+    private boolean gpsStatusOn;
+    private final int PERMISSION_ID = 1;
     private ActivitySendLocationBinding binding;
     private final BroadcastReceiver locationSwitchStateReceiver = new BroadcastReceiver() {
 
@@ -56,6 +54,7 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
                 boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if (isGpsEnabled) {
+                    startService();
                     binding.tvGpsStatus.setText(R.string.gps_status_on);
                     binding.tvProgress.setText(R.string.location_determination_in_progress);
                     gpsStatusOn = true;
@@ -64,6 +63,7 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
                     gpsStatusOn = false;
 
                     if (!isNetworkConnected()) {
+                        stopService();
                         showToast(R.string.location_determination_is_impossible);
                         binding.tvProgress.setText(R.string.location_determination_off);
                     }
@@ -78,10 +78,12 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
         binding = ActivitySendLocationBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         setSupportActionBar(binding.toolbar);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+//        добавить условие
         requestIgnoringBatteryOptimizations();
 
         IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
@@ -91,13 +93,33 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         connectivityManager.registerDefaultNetworkCallback(new ConnectivityCallback());
 
-        sendLocationToFirebase();
+//        sendLocationToFirebase();
         checkGpsStatus();
         checkNetworkStatus();
 
         if (!gpsStatusOn && !isNetworkConnected()) {
             showToast(R.string.location_determination_is_impossible);
+//            stopservice?
         }
+        else {
+            sendLocationToFirebase();
+        }
+    }
+
+    public void startService() {
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    @Override
+    public void showToast(int toastMessage) {
+        super.showToast(toastMessage);
+    }
+
+    @Override
+    public void goToAnotherActivity(Class activity) {
+        super.goToAnotherActivity(activity);
     }
 
     @Override
@@ -142,19 +164,11 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    public void goToAnotherActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
-    }
 
-    public void showToast(int toastMessage) {
-        Toast.makeText(getApplicationContext(), toastMessage,
-                Toast.LENGTH_LONG).show();
-    }
-
+//TODO deprecated method
     private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public void checkGpsStatus() {
@@ -182,9 +196,9 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
     public void sendLocationToFirebase() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-                sendLocationPresenter.doWork();
+                startService();
             } else {
-                showToast(R.string.turn_on_detection_of_location);
+                showToast(R.string.turn_on_determination_of_location);
                 showLocationSourceSettings();
             }
         } else {
@@ -199,15 +213,13 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
             super.onCapabilitiesChanged(network, networkCapabilities);
             boolean connected = networkCapabilities.hasCapability(NET_CAPABILITY_INTERNET);
             networkStatusOn = true;
+            startService();
 
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(() -> {
                 binding.tvNetworkStatus.setText(R.string.network_status_on);
-                binding.tvProgress.setText(R.string.location_determination);
+                binding.tvProgress.setText(R.string.location_determination_in_progress);
             });
-
-
-
         }
 
         @Override
@@ -218,10 +230,15 @@ public class SendLocationActivity extends MvpAppCompatActivity implements SendLo
             handler.post(() -> {
                 binding.tvNetworkStatus.setText(R.string.network_status_off);
                 if (!gpsStatusOn) {
+                    stopService();
                     showToast(R.string.location_determination_is_impossible);
                     binding.tvProgress.setText(R.string.location_determination_off);
                 }
             });
         }
+    }
+    public void stopService() {
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        stopService(serviceIntent);
     }
 }

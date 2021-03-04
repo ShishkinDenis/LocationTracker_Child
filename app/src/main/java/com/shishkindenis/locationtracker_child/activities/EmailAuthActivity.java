@@ -1,32 +1,37 @@
 package com.shishkindenis.locationtracker_child.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.shishkindenis.locationtracker_child.R;
+import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityEmailAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.EmailAuthPresenter;
 import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 
-import moxy.MvpAppCompatActivity;
+import javax.inject.Inject;
+
 import moxy.presenter.InjectPresenter;
 
-public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuthView {
+public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
 
     @InjectPresenter
     EmailAuthPresenter emailAuthPresenter;
 
+    @Inject
+    FirebaseAuth auth;
+
     private ActivityEmailAuthBinding binding;
-    private FirebaseAuth auth;
+//    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityEmailAuthBinding.inflate(getLayoutInflater());
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
+        MyApplication.appComponent.inject(this);
         View view = binding.getRoot();
         setContentView(view);
 
@@ -48,15 +53,16 @@ public class EmailAuthActivity extends MvpAppCompatActivity implements EmailAuth
         });
     }
 
-    public void goToAnotherActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
+    @Override
+    public void showToast(int toastMessage) {
+        super.showToast(toastMessage);
     }
 
-    public void showToast(int toastMessage) {
-        Toast.makeText(getApplicationContext(), toastMessage,
-                Toast.LENGTH_LONG).show();
+    @Override
+    public void goToAnotherActivity(Class activity) {
+        super.goToAnotherActivity(activity);
     }
+
 
     public void showToastWithEmail(String toastMessage) {
         Toast.makeText(getApplicationContext(), toastMessage,

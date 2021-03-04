@@ -19,16 +19,20 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
 
+    //    Dagger! или в параметры метода
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
-    public String mVerificationId;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+//    rename
+    private String phoneVerificationId;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
+    //    rename
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
     public PhoneAuthPresenter() {
     }
 
+    //поставить в качестве параметра auth?
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks callback() {
-        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
                 signInWithPhoneAuthCredential(credential);
@@ -46,12 +50,12 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
             @Override
             public void onCodeSent(@NonNull String verificationId,
                                    @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                mVerificationId = verificationId;
+                phoneVerificationId = verificationId;
                 mResendToken = token;
                 getViewState().enableVerifyButton();
             }
         };
-        return mCallbacks;
+        return callbacks;
     }
 
     public void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -73,8 +77,8 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
                 });
     }
 
-    public void verifyPhoneNumberWithCode(String verificationId, String code) {
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+    public void verifyPhoneNumberWithCode(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, code);
         signInWithPhoneAuthCredential(credential);
     }
 
