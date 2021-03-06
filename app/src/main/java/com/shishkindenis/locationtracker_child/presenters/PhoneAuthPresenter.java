@@ -16,6 +16,7 @@ import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
+//CКОПИРОВАТЬ ИЗ PARENT
 @InjectViewState
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
 
@@ -30,7 +31,6 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
     public PhoneAuthPresenter() {
     }
 
-    //поставить в качестве параметра auth?
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks callback() {
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override

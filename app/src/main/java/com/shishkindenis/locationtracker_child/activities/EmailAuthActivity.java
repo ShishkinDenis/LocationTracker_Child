@@ -30,7 +30,7 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityEmailAuthBinding.inflate(getLayoutInflater());
-//        auth = FirebaseAuth.getInstance();
+
         MyApplication.appComponent.inject(this);
         View view = binding.getRoot();
         setContentView(view);
