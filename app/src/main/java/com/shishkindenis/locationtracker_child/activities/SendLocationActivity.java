@@ -20,8 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -30,6 +33,7 @@ import com.shishkindenis.locationtracker_child.databinding.ActivitySendLocationB
 import com.shishkindenis.locationtracker_child.presenters.SendLocationPresenter;
 import com.shishkindenis.locationtracker_child.services.ForegroundService;
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
+import com.shishkindenis.locationtracker_child.workers.LocationWorker;
 
 import moxy.presenter.InjectPresenter;
 
@@ -41,9 +45,10 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     SendLocationPresenter sendLocationPresenter;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private Intent intent;
     private boolean networkStatusOn;
     private boolean gpsStatusOn;
-    private final int PERMISSION_ID = 1;
+    private static final int PERMISSION_ID = 1;
     private ActivitySendLocationBinding binding;
     private final BroadcastReceiver locationSwitchStateReceiver = new BroadcastReceiver() {
 
@@ -54,6 +59,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
                 boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if (isGpsEnabled) {
+//                    workManager?
                     startService();
                     binding.tvGpsStatus.setText(R.string.gps_status_on);
                     binding.tvProgress.setText(R.string.location_determination_in_progress);
@@ -64,7 +70,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
 
                     if (!isNetworkConnected()) {
                         stopService();
-                        showToast(R.string.location_determination_is_impossible);
+                        showAlertDialog();
                         binding.tvProgress.setText(R.string.location_determination_off);
                     }
                 }
@@ -79,12 +85,14 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         View view = binding.getRoot();
         setContentView(view);
 
+        intent = new Intent();
         setSupportActionBar(binding.toolbar);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-//        добавить условие
-        requestIgnoringBatteryOptimizations();
+        if (!checkIgnoringBatteryOptimizationsPermission()) {
+            requestIgnoringBatteryOptimizations();
+        }
 
         IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
@@ -93,13 +101,11 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         connectivityManager.registerDefaultNetworkCallback(new ConnectivityCallback());
 
-//        sendLocationToFirebase();
         checkGpsStatus();
         checkNetworkStatus();
 
         if (!gpsStatusOn && !isNetworkConnected()) {
-            showToast(R.string.location_determination_is_impossible);
-//            stopservice?
+            showAlertDialog();
         }
         else {
             sendLocationToFirebase();
@@ -108,7 +114,6 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
 
     public void startService() {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
-        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
@@ -131,7 +136,8 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         sendLocationPresenter.signOut();
-        goToAnotherActivity(MainActivity.class);
+        setResult(RESULT_OK, intent);
+        finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,6 +154,19 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         startActivity(intent);
     }
 
+    public void showNetworkSettings() {
+        Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+        startActivity(intent);
+    }
+
+    public void showAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.location_determination_is_impossible)
+                .setPositiveButton(R.string.network, (dialog, which) -> showNetworkSettings())
+                .setNegativeButton(R.string.gps, (dialog, which) -> showLocationSourceSettings())
+                .show();
+    }
+
     public void requestIgnoringBatteryOptimizations() {
         Intent intent = new
                 Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
@@ -159,13 +178,15 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
+    public boolean  checkIgnoringBatteryOptimizationsPermission() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+
     public boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-
-//TODO deprecated method
     private boolean isNetworkConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
@@ -196,7 +217,10 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     public void sendLocationToFirebase() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-                startService();
+//                startService();
+//                в метод
+                OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
+                WorkManager.getInstance().enqueue(myWorkRequest);
             } else {
                 showToast(R.string.turn_on_determination_of_location);
                 showLocationSourceSettings();
@@ -213,6 +237,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
             super.onCapabilitiesChanged(network, networkCapabilities);
             boolean connected = networkCapabilities.hasCapability(NET_CAPABILITY_INTERNET);
             networkStatusOn = true;
+//            заменить на workManager?
             startService();
 
             Handler handler = new Handler(Looper.getMainLooper());
@@ -230,13 +255,15 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
             handler.post(() -> {
                 binding.tvNetworkStatus.setText(R.string.network_status_off);
                 if (!gpsStatusOn) {
+//                    стоп WorkManager?
                     stopService();
-                    showToast(R.string.location_determination_is_impossible);
+                    showAlertDialog();
                     binding.tvProgress.setText(R.string.location_determination_off);
                 }
             });
         }
     }
+
     public void stopService() {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         stopService(serviceIntent);

@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class CustomModule {
+public class FirebaseAuthModule {
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Provides

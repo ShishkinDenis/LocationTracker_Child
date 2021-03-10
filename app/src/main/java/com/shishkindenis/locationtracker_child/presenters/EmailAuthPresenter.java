@@ -3,9 +3,12 @@ package com.shishkindenis.locationtracker_child.presenters;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.R;
-import com.shishkindenis.locationtracker_child.activities.MainActivity;
 import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
+import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
+import com.shishkindenis.locationtracker_child.singletons.IdSingleton;
 import com.shishkindenis.locationtracker_child.views.EmailAuthView;
+
+import javax.inject.Inject;
 
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
@@ -13,7 +16,12 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
 
-    public EmailAuthPresenter() { }
+    @Inject
+    IdSingleton idSingleton;
+    private String userId;
+
+    public EmailAuthPresenter() {
+    }
 
     public void createAccount(FirebaseAuth auth, String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -27,12 +35,14 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
     }
 
     public void signIn(FirebaseAuth auth, String email, String password) {
+        MyApplication.appComponent.inject(this);
+
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-//                        или user из MainActivity???
                         FirebaseUser user = auth.getCurrentUser();
-                        MainActivity.userID = user.getUid();
+                        userId = user.getUid();
+                        idSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);
                         getViewState().goToAnotherActivity(SendLocationActivity.class);
                     } else {
@@ -40,4 +50,5 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
                     }
                 });
     }
+
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="location_tracker_text_size">36sp</dimen>
+    <dimen name="child_edition_text_size">18sp</dimen>
+    <dimen name="welcome_text_size">36sp</dimen>
+    <dimen name="choose_the_signing_way_text_size">18sp</dimen>
+    <dimen name="connection_information_text_size">30sp</dimen>
+    <dimen name="location_determination_text_size">18sp</dimen>
+    <dimen name="gps_status_text_size">18sp</dimen>
+    <dimen name="network_status_text_size">18sp</dimen>
+</resources>

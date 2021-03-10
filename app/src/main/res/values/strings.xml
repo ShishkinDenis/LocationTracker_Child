@@ -45,4 +45,6 @@
     <string name="location_determination_off">Location determination : OFF</string>
     <string name="network_status_on">Network status : ON</string>
     <string name="network_status_off">Network status : OFF</string>
+    <string name="network">Network</string>
+    <string name="gps">GPS</string>
 </resources>

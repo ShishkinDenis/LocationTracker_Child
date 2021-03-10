@@ -25,6 +25,8 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
     @Inject
     FirebaseAuth auth;
+    private boolean phoneNumberValid;
+    private boolean codeValid;
 
     private ActivityPhoneAuthBinding binding;
 
@@ -42,19 +44,23 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
             if (validatePhoneNumber()) {
                 startPhoneNumberVerification(binding.etPhoneNumber.getText().toString());
             }
+            else{
+                setErrorIfInvalid();
+            }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
-
         binding.btnVerifyCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
             if (validateCode()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
-                        binding.etVerificationCode.getText().toString());
+                        auth, binding.etVerificationCode.getText().toString());
+            }
+            else{
+                setErrorIfInvalid();
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
-        //поставить в качестве параметра auth?
-        phoneAuthPresenter.callback();
+        phoneAuthPresenter.phoneVerificationCallback(auth);
     }
 
     @Override
@@ -73,31 +79,21 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
                         .setPhoneNumber(phoneNumber)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
-//                        .setCallbacks(mCallbacks)
-                        .setCallbacks(phoneAuthPresenter.callback())
+                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
 
-    private boolean validatePhoneNumber() {
-        if (binding.etPhoneNumber.getText().toString().isEmpty()) {
-            binding.etPhoneNumber.setError(getString(R.string.invalid_phone_number));
-            showToast(R.string.invalid_phone_number);
-            return false;
-        }
-        return true;
+
+    public boolean validatePhoneNumber() {
+        phoneNumberValid = !binding.etPhoneNumber.getText().toString().isEmpty();
+        return phoneNumberValid;
     }
 
-    private boolean validateCode() {
-        if (binding.etVerificationCode.getText().toString().isEmpty()) {
-            binding.etVerificationCode.setError(getString(R.string.cannot_be_empty));
-            showToast(R.string.cannot_be_empty);
-            return false;
-        }
-        return true;
+    public boolean validateCode() {
+        codeValid = !binding.etVerificationCode.getText().toString().isEmpty();
+        return codeValid;
     }
-
-
 
     @Override
     public void enableVerifyButton() {
@@ -114,4 +110,12 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
         binding.etVerificationCode.setError(getString(R.string.invalid_code));
     }
 
+    public void setErrorIfInvalid() {
+        if (!phoneNumberValid) {
+            showInvalidPhoneNumberError();
+        }
+        if (!codeValid) {
+            showInvalidCodeError();
+        }
+    }
 }
