@@ -38,10 +38,9 @@ import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 
 public class SendLocationActivity extends BaseActivity implements SendLocationView {
 
+    private static final int PERMISSION_ID = 1;
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
-
-    private static final int PERMISSION_ID = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private Intent intent;
     private boolean networkStatusOn;
@@ -80,31 +79,41 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         binding = ActivitySendLocationBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         intent = new Intent();
         setSupportActionBar(binding.toolbar);
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        if (!checkIgnoringBatteryOptimizationsPermission()) {
+        checkIgnoringBatteryOptimizationsPermission();
+        registerLocationSwitchStateReceiver();
+        initConnectivityCallback();
+        setGpsStatus();
+        setNetworkStatus();
+        startLocationDetermination();
+    }
+
+    public void checkIgnoringBatteryOptimizationsPermission() {
+        if (!isIgnoringBatteryOptimizationsPermissionGiven()) {
             requestIgnoringBatteryOptimizations();
         }
+    }
 
-        IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
-        filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        this.registerReceiver(locationSwitchStateReceiver, filter);
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        connectivityManager.registerDefaultNetworkCallback(new ConnectivityCallback());
-
-        checkGpsStatus();
-        checkNetworkStatus();
-
+    public void startLocationDetermination() {
         if (!gpsStatusOn && !isNetworkConnected()) {
             showAlertDialog();
         } else {
             sendLocationToFirebase();
         }
+    }
+
+    public void registerLocationSwitchStateReceiver() {
+        IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
+        this.registerReceiver(locationSwitchStateReceiver, filter);
+    }
+
+    public void initConnectivityCallback() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        connectivityManager.registerDefaultNetworkCallback(new ConnectivityCallback());
     }
 
     public void startService() {
@@ -173,7 +182,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public boolean checkIgnoringBatteryOptimizationsPermission() {
+    public boolean isIgnoringBatteryOptimizationsPermissionGiven() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -187,7 +196,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    public void checkGpsStatus() {
+    public void setGpsStatus() {
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isGpsEnabled) {
@@ -200,7 +209,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         }
     }
 
-    public void checkNetworkStatus() {
+    public void setNetworkStatus() {
         if (isNetworkConnected()) {
             binding.tvNetworkStatus.setText(R.string.network_status_on);
             binding.tvProgress.setText(R.string.location_determination_in_progress);
@@ -257,5 +266,5 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
             });
         }
     }
-    
+
 }

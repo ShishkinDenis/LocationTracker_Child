@@ -34,4 +34,5 @@ public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
         auth.signOut();
         getViewState().showToast(R.string.sign_out_successful);
     }
+
 }

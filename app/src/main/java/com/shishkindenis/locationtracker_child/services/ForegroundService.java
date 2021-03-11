@@ -75,14 +75,9 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-//        вынеси в метод
-        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
+        checkIfGpsEnabled();
         MyApplication.appComponent.inject(this);
         user = auth.getCurrentUser();
-
         if (user != null) {
             idSingleton.setUserId(user.getUid());
             userId = idSingleton.getUserId();
@@ -172,6 +167,11 @@ public class ForegroundService extends Service {
     private boolean isNetworkConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
+    public void checkIfGpsEnabled(){
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
 }
