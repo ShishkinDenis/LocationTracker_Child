@@ -84,14 +84,14 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
         }
     }
 
-    public void logInIfValid(){
+    public void logInIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
         emailAuthPresenter.signIn(auth, binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());
         binding.pbEmailAuth.setVisibility(View.INVISIBLE);
     }
 
-    public void registerIfValid(){
+    public void registerIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
         emailAuthPresenter.createAccount(auth, binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());

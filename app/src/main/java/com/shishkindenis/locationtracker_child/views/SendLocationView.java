@@ -12,4 +12,6 @@ public interface SendLocationView extends MvpView {
     void requestPermissions();
 
     void showToast(int toastMessage);
+
+    void stopService();
 }

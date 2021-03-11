@@ -33,7 +33,6 @@ public class MainActivity extends BaseActivity implements MainView {
         binding.btnPhone.setOnClickListener(v -> goToAnotherActivity(PhoneAuthActivity.class));
     }
 
-
     @Override
     public void goToAnotherActivity(Class activity) {
         super.goToAnotherActivity(activity);
@@ -44,6 +43,4 @@ public class MainActivity extends BaseActivity implements MainView {
         Intent intent = new Intent(this, activity);
         startActivityForResult(intent, 2);
     }
-
-
 }

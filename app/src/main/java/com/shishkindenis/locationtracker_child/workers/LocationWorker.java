@@ -12,12 +12,10 @@ import com.shishkindenis.locationtracker_child.services.ForegroundService;
 
 public class LocationWorker extends Worker {
 
-    Intent serviceIntent;
-
+    private final Intent serviceIntent;
 
     public LocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         serviceIntent = new Intent(context, ForegroundService.class);
         ContextCompat.startForegroundService(context, serviceIntent);
     }
@@ -25,16 +23,7 @@ public class LocationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-
-//        socket timeout ~20-30 minutes
-
-//        Handler handler = new Handler(Looper.getMainLooper());
-//        handler.post(this::getLocation);
-
-
-
         return Result.success();
     }
-
 
 }

@@ -20,22 +20,18 @@ public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
     @Inject
     FirebaseAuth auth;
 
-    public SendLocationPresenter() { }
+    public SendLocationPresenter() {
+    }
 
-    public void doWork() {
+    public void startLocationWorker(){
         OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
         WorkManager.getInstance().enqueue(myWorkRequest);
-
-//        Код для периодичности в 15 мин
-//        PeriodicWorkRequest locationWork = new PeriodicWorkRequest.Builder(
-//                LocationWork.class, 15, TimeUnit.MINUTES).addTag(LocationWork.TAG).build();
-//        WorkManager.getInstance().enqueue(locationWork);
     }
 
     public void signOut() {
         MyApplication.appComponent.inject(this);
+        getViewState().stopService();
         auth.signOut();
         getViewState().showToast(R.string.sign_out_successful);
     }
-
 }

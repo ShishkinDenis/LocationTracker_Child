@@ -27,7 +27,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     public MainPresenter() {
     }
 
-    public void  checkIfUserLoggedIn(){
+    public void checkIfUserLoggedIn() {
 //        куда правильно инжектить эту строчку в презентер?
         MyApplication.appComponent.inject(this);
 

@@ -14,15 +14,20 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {FirebaseAuthModule.class,IdSingletonModule.class})
+@Component(modules = {FirebaseAuthModule.class, IdSingletonModule.class})
 public interface ApplicationComponent {
     void inject(EmailAuthActivity emailAuthActivity);
+
     void inject(PhoneAuthActivity phoneAuthActivity);
+
     void inject(MainActivity mainActivity);
 
     void inject(MainPresenter mainPresenter);
+
     void inject(EmailAuthPresenter emailAuthPresenter);
+
     void inject(PhoneAuthPresenter phoneAuthPresenter);
+
     void inject(SendLocationPresenter sendLocationPresenter);
 
     void inject(ForegroundService foregroundService);

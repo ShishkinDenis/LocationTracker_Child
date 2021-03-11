@@ -7,16 +7,21 @@ import android.content.Intent;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.workers.LocationWorker;
 
 public class BootReceiver extends BroadcastReceiver {
+    private FirebaseUser user;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //            если все включено и все права получены и пользователь зашел и автоСТАРТ включен
-//        Автозапуск
-        OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
-        WorkManager.getInstance().enqueue(myWorkRequest);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user != null) {
+            OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
+            WorkManager.getInstance().enqueue(myWorkRequest);
+        }
     }
 }
 

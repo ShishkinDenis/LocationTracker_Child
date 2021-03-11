@@ -23,21 +23,21 @@ import moxy.MvpPresenter;
 @InjectViewState
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
 
+    @Inject
+    IdSingleton idSingleton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String phoneVerificationId;
     private PhoneAuthProvider.ForceResendingToken forceResendingToken;
-
-    @Inject
-    IdSingleton idSingleton;
     private String userId;
 
-    public PhoneAuthPresenter() { }
+    public PhoneAuthPresenter() {
+    }
 
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks phoneVerificationCallback(FirebaseAuth auth) {
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
-                signInWithPhoneAuthCredential(auth,credential);
+                signInWithPhoneAuthCredential(auth, credential);
             }
 
             @Override
@@ -60,7 +60,7 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
         return callbacks;
     }
 
-    private void signInWithPhoneAuthCredential(FirebaseAuth auth,PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(FirebaseAuth auth, PhoneAuthCredential credential) {
         MyApplication.appComponent.inject(this);
 
         auth.signInWithCredential(credential)
@@ -81,9 +81,9 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
                 });
     }
 
-    public void verifyPhoneNumberWithCode(FirebaseAuth auth,String code) {
+    public void verifyPhoneNumberWithCode(FirebaseAuth auth, String code) {
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, code);
-        signInWithPhoneAuthCredential(auth,credential);
+        signInWithPhoneAuthCredential(auth, credential);
     }
 
 }

@@ -7,5 +7,6 @@ import moxy.viewstate.strategy.StateStrategyType;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface MainView extends MvpView {
     void goToAnotherActivity(Class activity);
+
     void goToAnotherActivityForResult(Class activity);
 }

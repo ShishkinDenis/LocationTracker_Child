@@ -11,7 +11,7 @@ import dagger.Provides;
 public class IdSingletonModule {
     @Provides
     @Singleton
-    IdSingleton provideIdSingleton(){
+    IdSingleton provideIdSingleton() {
         return new IdSingleton();
     }
 }

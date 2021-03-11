@@ -6,8 +6,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,7 +46,6 @@ public class ForegroundService extends Service {
 
     @Inject
     FirebaseAuth auth;
-
     @Inject
     IdSingleton idSingleton;
 
@@ -54,16 +56,30 @@ public class ForegroundService extends Service {
     private final static String datePattern = "yyyy-MM-dd";
     private final static String CHANNEL_ID = "ForegroundServiceChannel";
     private final static String TAG = "TAG";
+    boolean isGpsEnabled;
     private FusedLocationProviderClient mFusedLocationClient;
     private String userId;
     private FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     private Map<String, Object> locationMap = new HashMap<>();
     private String time;
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            getPosition(locationResult);
+            addData();
+            Log.d("Location", "TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
+        }
+    };
     private FirebaseUser user;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+//        вынеси в метод
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
         MyApplication.appComponent.inject(this);
         user = auth.getCurrentUser();
 
@@ -80,21 +96,22 @@ public class ForegroundService extends Service {
         Intent notificationIntent = new Intent(this, SendLocationActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         final NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Location tracker")
+                .setContentTitle(getString(R.string.location_tracker))
                 .setSmallIcon(R.drawable.map)
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-//               нужно?
-                .setVibrate(null) // Passing null here silently fails
+                .setVibrate(null)
                 .setContentIntent(pendingIntent);
 
-//как быть со стоп?
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {
-            getLocation();
-            notification.setContentText("Location determination in progress");
+            if (isNetworkConnected() || isGpsEnabled) {
+                getLocation();
+                notification.setContentText(getString(R.string.location_determination_in_progress));
+            } else {
+                notification.setContentText(getString(R.string.location_determination_is_impossible));
+            }
             startForeground(1, notification.build());
         });
-//        это что?
         return START_NOT_STICKY;
     }
 
@@ -117,15 +134,6 @@ public class ForegroundService extends Service {
             manager.createNotificationChannel(serviceChannel);
         }
     }
-
-    private final LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            getPosition(locationResult);
-            addData();
-            Log.d("Location", "TIME:" + DateFormat.getTimeInstance(DateFormat.SHORT, Locale.ENGLISH).format(new Date()));
-        }
-    };
 
     public void getPosition(LocationResult locationResult) {
         Location mLastLocation = locationResult.getLastLocation();
@@ -154,11 +162,16 @@ public class ForegroundService extends Service {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(15000);
         mLocationRequest.setFastestInterval(15000);
-//        TODO установить в оконччательном коммите
+//        TODO установить в окончательном коммите
 //        mLocationRequest.setSmallestDisplacement(60);
 //        mLocationRequest.setInterval(60000*10);
 //        mLocationRequest.setFastestInterval(60000*10);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
 }

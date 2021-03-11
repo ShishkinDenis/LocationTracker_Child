@@ -10,7 +10,7 @@ public class FirebaseAuthModule {
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Provides
-    FirebaseAuth provideAuth(){
+    FirebaseAuth provideAuth() {
         return auth;
     }
 }
