@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.shishkindenis.locationtracker_child.R;
-import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.singletons.IdSingleton;
 import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
@@ -31,6 +30,7 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
     private String userId;
 
     public PhoneAuthPresenter() {
+        MyApplication.appComponent.inject(this);
     }
 
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks phoneVerificationCallback(FirebaseAuth auth) {
@@ -61,8 +61,6 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
     }
 
     private void signInWithPhoneAuthCredential(FirebaseAuth auth, PhoneAuthCredential credential) {
-        MyApplication.appComponent.inject(this);
-
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -70,7 +68,7 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
                         userId = user.getUid();
                         idSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);
-                        getViewState().goToAnotherActivity(SendLocationActivity.class);
+                        getViewState().goToSendLocationActivity();
                     } else {
                         getViewState().showToast((R.string.authentication_failed));
 

@@ -42,7 +42,6 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
     private FusedLocationProviderClient fusedLocationClient;
-    private Intent intent;
     private boolean networkStatusOn;
     private boolean gpsStatusOn;
     private ActivitySendLocationBinding binding;
@@ -79,7 +78,6 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
         binding = ActivitySendLocationBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        intent = new Intent();
         setSupportActionBar(binding.toolbar);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -122,16 +120,6 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     }
 
     @Override
-    public void showToast(int toastMessage) {
-        super.showToast(toastMessage);
-    }
-
-    @Override
-    public void goToAnotherActivity(Class activity) {
-        super.goToAnotherActivity(activity);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
@@ -140,7 +128,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         sendLocationPresenter.signOut();
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK, null);
         finish();
         return super.onOptionsItemSelected(item);
     }

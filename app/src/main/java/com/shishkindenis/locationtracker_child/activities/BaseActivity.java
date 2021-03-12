@@ -1,6 +1,5 @@
 package com.shishkindenis.locationtracker_child.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -21,8 +20,4 @@ public class BaseActivity extends MvpAppCompatActivity {
                 Toast.LENGTH_LONG).show();
     }
 
-    public void goToAnotherActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
-    }
 }

@@ -6,7 +6,6 @@ import moxy.viewstate.strategy.StateStrategyType;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface PhoneAuthView extends MvpView {
-    void goToAnotherActivity(Class activity);
 
     void showToast(int toastMessage);
 
@@ -15,4 +14,6 @@ public interface PhoneAuthView extends MvpView {
     void showInvalidPhoneNumberError();
 
     void showInvalidCodeError();
+
+    void goToSendLocationActivity();
 }

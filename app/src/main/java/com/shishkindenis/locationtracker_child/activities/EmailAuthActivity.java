@@ -1,5 +1,6 @@
 package com.shishkindenis.locationtracker_child.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -22,18 +23,12 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
 
     @Inject
     FirebaseAuth auth;
-    private boolean emailValid;
-    private boolean passwordValid;
     private ActivityEmailAuthBinding binding;
 
-    @Override
-    public void showToast(int toastMessage) {
-        super.showToast(toastMessage);
-    }
-
-    @Override
-    public void goToAnotherActivity(Class activity) {
-        super.goToAnotherActivity(activity);
+    public void goToSendLocationActivity() {
+        Intent intent = new Intent(this, SendLocationActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -66,20 +61,18 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
     }
 
     public boolean validateEmail() {
-        emailValid = !binding.etEmail.getText().toString().isEmpty();
-        return emailValid;
+        return !binding.etEmail.getText().toString().isEmpty();
     }
 
     public boolean validatePassword() {
-        passwordValid = !binding.etPassword.getText().toString().isEmpty();
-        return passwordValid;
+        return !binding.etPassword.getText().toString().isEmpty();
     }
 
     public void setErrorIfInvalid() {
-        if (!emailValid) {
+        if (!validateEmail()) {
             binding.etEmail.setError(getString(R.string.required_email));
         }
-        if (!passwordValid) {
+        if (!validatePassword()) {
             binding.etPassword.setError(getString(R.string.required_password));
         }
     }

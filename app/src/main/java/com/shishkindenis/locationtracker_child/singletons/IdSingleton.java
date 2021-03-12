@@ -4,9 +4,6 @@ public class IdSingleton {
 
     private String userId;
 
-    public IdSingleton() {
-    }
-
     public String getUserId() {
         return userId;
     }

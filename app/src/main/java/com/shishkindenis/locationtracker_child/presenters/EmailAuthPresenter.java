@@ -3,7 +3,6 @@ package com.shishkindenis.locationtracker_child.presenters;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.R;
-import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.singletons.IdSingleton;
 import com.shishkindenis.locationtracker_child.views.EmailAuthView;
@@ -21,6 +20,7 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
     private String userId;
 
     public EmailAuthPresenter() {
+        MyApplication.appComponent.inject(this);
     }
 
     public void createAccount(FirebaseAuth auth, String email, String password) {
@@ -35,8 +35,6 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
     }
 
     public void signIn(FirebaseAuth auth, String email, String password) {
-        MyApplication.appComponent.inject(this);
-
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -44,7 +42,7 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
                         userId = user.getUid();
                         idSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);
-                        getViewState().goToAnotherActivity(SendLocationActivity.class);
+                        getViewState().goToSendLocationActivity();
                     } else {
                         getViewState().showToast((R.string.authentication_failed));
                     }

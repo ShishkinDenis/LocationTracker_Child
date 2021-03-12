@@ -44,11 +44,6 @@ import javax.inject.Inject;
 
 public class ForegroundService extends Service {
 
-    @Inject
-    FirebaseAuth auth;
-    @Inject
-    IdSingleton idSingleton;
-
     private final static String LONGITUDE_FIELD = "Longitude";
     private final static String LATITUDE_FIELD = "Latitude";
     private final static String TIME_FIELD = "Time";
@@ -56,11 +51,14 @@ public class ForegroundService extends Service {
     private final static String datePattern = "yyyy-MM-dd";
     private final static String CHANNEL_ID = "ForegroundServiceChannel";
     private final static String TAG = "TAG";
-    boolean isGpsEnabled;
+    @Inject
+    FirebaseAuth auth;
+    @Inject
+    IdSingleton idSingleton;
     private FusedLocationProviderClient mFusedLocationClient;
     private String userId;
-    private FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
-    private Map<String, Object> locationMap = new HashMap<>();
+    private final FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
+    private final Map<String, Object> locationMap = new HashMap<>();
     private String time;
     private final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -75,7 +73,7 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        checkIfGpsEnabled();
+        isGpsEnabled();
         MyApplication.appComponent.inject(this);
         user = auth.getCurrentUser();
         if (user != null) {
@@ -99,7 +97,7 @@ public class ForegroundService extends Service {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {
-            if (isNetworkConnected() || isGpsEnabled) {
+            if (isNetworkConnected() || isGpsEnabled()) {
                 getLocation();
                 notification.setContentText(getString(R.string.location_determination_in_progress));
             } else {
@@ -169,9 +167,9 @@ public class ForegroundService extends Service {
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    public void checkIfGpsEnabled(){
+    public boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
 }
