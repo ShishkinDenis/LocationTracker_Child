@@ -27,8 +27,8 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
 
     public void goToSendLocationActivity() {
         Intent intent = new Intent(this, SendLocationActivity.class);
-        startActivity(intent);
         finish();
+        startActivity(intent);
     }
 
     @Override

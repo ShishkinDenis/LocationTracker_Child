@@ -51,14 +51,14 @@ public class ForegroundService extends Service {
     private final static String datePattern = "yyyy-MM-dd";
     private final static String CHANNEL_ID = "ForegroundServiceChannel";
     private final static String TAG = "TAG";
+    private final FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
+    private final Map<String, Object> locationMap = new HashMap<>();
     @Inject
     FirebaseAuth auth;
     @Inject
     IdSingleton idSingleton;
     private FusedLocationProviderClient mFusedLocationClient;
     private String userId;
-    private final FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
-    private final Map<String, Object> locationMap = new HashMap<>();
     private String time;
     private final LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -153,12 +153,9 @@ public class ForegroundService extends Service {
     public void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(15000);
-        mLocationRequest.setFastestInterval(15000);
-//        TODO установить в окончательном коммите
-//        mLocationRequest.setSmallestDisplacement(60);
-//        mLocationRequest.setInterval(60000*10);
-//        mLocationRequest.setFastestInterval(60000*10);
+        mLocationRequest.setSmallestDisplacement(60);
+        mLocationRequest.setInterval(60000*10);
+        mLocationRequest.setFastestInterval(60000*10);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 

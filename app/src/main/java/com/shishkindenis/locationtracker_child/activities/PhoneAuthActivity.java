@@ -61,8 +61,8 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
     public void goToSendLocationActivity() {
         Intent intent = new Intent(this, SendLocationActivity.class);
-        startActivity(intent);
         finish();
+        startActivity(intent);
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
