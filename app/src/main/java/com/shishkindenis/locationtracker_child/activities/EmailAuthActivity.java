@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityEmailAuthBinding;
@@ -20,28 +19,17 @@ import moxy.presenter.ProvidePresenter;
 
 public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
 
-//    @InjectPresenter
-//    EmailAuthPresenter emailAuthPresenter;
-
     @Inject
     @InjectPresenter
     EmailAuthPresenter emailAuthPresenter;
+    @Inject
+    FirebaseUserSingleton firebaseUserSingleton;
+    private ActivityEmailAuthBinding binding;
 
     @ProvidePresenter
-    EmailAuthPresenter provideEmailAuthPresenter(){
+    EmailAuthPresenter provideEmailAuthPresenter() {
         return emailAuthPresenter;
     }
-
-//    @Inject
-//    FirebaseAuth auth;
-
-@Inject
-FirebaseUserSingleton firebaseUserSingleton;
-
-//    FirebaseUserSingleton firebaseUserSingleton;
-
-    FirebaseAuth auth;
-    private ActivityEmailAuthBinding binding;
 
     public void goToSendLocationActivity() {
         Intent intent = new Intent(this, SendLocationActivity.class);
@@ -54,13 +42,8 @@ FirebaseUserSingleton firebaseUserSingleton;
         MyApplication.appComponent.inject(this);
         super.onCreate(savedInstanceState);
         binding = ActivityEmailAuthBinding.inflate(getLayoutInflater());
-//убрать?
-
         View view = binding.getRoot();
         setContentView(view);
-
-//      auth = firebaseUserSingleton.getFirebaseAuth();
-
 
         binding.btnRegister.setOnClickListener(v -> {
             if (emailIsValid() & passwordIsValid()) {
@@ -102,22 +85,14 @@ FirebaseUserSingleton firebaseUserSingleton;
 
     public void logInIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
-//        emailAuthPresenter.signIn(auth, binding.etEmail.getText().toString(),
-//        emailAuthPresenter.signIn(binding.etEmail.getText().toString(),
         emailAuthPresenter.signIn(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
-//        emailAuthPresenter.signIn(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
-//        emailAuthPresenter.signIn(binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());
         binding.pbEmailAuth.setVisibility(View.INVISIBLE);
     }
 
     public void registerIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
-//        emailAuthPresenter.createAccount(auth, binding.etEmail.getText().toString(),
-//        emailAuthPresenter.createAccount(binding.etEmail.getText().toString(),
         emailAuthPresenter.createAccount(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
-//        emailAuthPresenter.createAccount(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
-//        emailAuthPresenter.createAccount(binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());
         binding.pbEmailAuth.setVisibility(View.INVISIBLE);
     }

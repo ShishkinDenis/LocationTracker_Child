@@ -20,21 +20,11 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
-
-//    @Inject
-//    IdSingleton idSingleton;
-//@Inject
-//FirebaseUserSingleton firebaseUserSingleton;
-FirebaseUserSingleton firebaseUserSingleton;
+    FirebaseUserSingleton firebaseUserSingleton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String phoneVerificationId;
     private PhoneAuthProvider.ForceResendingToken forceResendingToken;
     private String userId;
-
-//    @Inject
-//    public PhoneAuthPresenter() {
-//        MyApplication.appComponent.inject(this);
-//    }
 
     @Inject
     public PhoneAuthPresenter(FirebaseUserSingleton firebaseUserSingleton) {
@@ -74,7 +64,6 @@ FirebaseUserSingleton firebaseUserSingleton;
                     if (task.isSuccessful()) {
                         FirebaseUser user = task.getResult().getUser();
                         userId = user.getUid();
-//                        idSingleton.setUserId(userId);
                         firebaseUserSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);
                         getViewState().goToSendLocationActivity();

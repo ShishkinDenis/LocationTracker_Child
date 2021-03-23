@@ -15,23 +15,12 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
-
-//    @Inject
-//    FirebaseAuth auth;
-//    @Inject
-//    FirebaseUserSingleton firebaseUserSingleton;
     FirebaseUserSingleton firebaseUserSingleton;
 
-
-//    public SendLocationPresenter() {
-//        MyApplication.appComponent.inject(this);
-//    }
-        @Inject
-        public SendLocationPresenter(FirebaseUserSingleton firebaseUserSingleton) {
-            this.firebaseUserSingleton = firebaseUserSingleton;
-    
+    @Inject
+    public SendLocationPresenter(FirebaseUserSingleton firebaseUserSingleton) {
+        this.firebaseUserSingleton = firebaseUserSingleton;
     }
-
 
     public void startLocationWorker() {
         OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();
@@ -40,7 +29,6 @@ public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
 
     public void signOut() {
         getViewState().stopService();
-//        auth.signOut();
         firebaseUserSingleton.getFirebaseAuth().signOut();
         getViewState().showToast(R.string.sign_out_successful);
     }

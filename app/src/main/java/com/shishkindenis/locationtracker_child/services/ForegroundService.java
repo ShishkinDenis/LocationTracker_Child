@@ -52,10 +52,6 @@ public class ForegroundService extends Service {
     private final static String TAG = "TAG";
     private final FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     private final Map<String, Object> locationMap = new HashMap<>();
-//    @Inject
-//    FirebaseAuth auth;
-//    @Inject
-//    IdSingleton idSingleton;
     @Inject
     FirebaseUserSingleton firebaseUserSingleton;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -76,22 +72,11 @@ public class ForegroundService extends Service {
         MyApplication.appComponent.inject(this);
         super.onCreate();
         isGpsEnabled();
-
-
-//        user = auth.getCurrentUser();
-//        if (user != null) {
-//            idSingleton.setUserId(user.getUid());
-//            userId = idSingleton.getUserId();
-//        }
-
         user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
         if (user != null) {
             firebaseUserSingleton.setUserId(user.getUid());
             userId = firebaseUserSingleton.getUserId();
         }
-
-
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 

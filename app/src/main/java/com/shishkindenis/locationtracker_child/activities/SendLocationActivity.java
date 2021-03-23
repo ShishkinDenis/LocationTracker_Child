@@ -41,18 +41,10 @@ import moxy.presenter.ProvidePresenter;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 
 public class SendLocationActivity extends BaseActivity implements SendLocationView {
-
     private static final int PERMISSION_ID = 1;
-//    @InjectPresenter
-//    SendLocationPresenter sendLocationPresenter;
-
     @Inject
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
-
-    @ProvidePresenter
-    SendLocationPresenter provideSendLocationPresenter(){return sendLocationPresenter;}
-
     private FusedLocationProviderClient fusedLocationClient;
     private boolean networkStatusOn;
     private boolean gpsStatusOn;
@@ -83,6 +75,11 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
             }
         }
     };
+
+    @ProvidePresenter
+    SendLocationPresenter provideSendLocationPresenter() {
+        return sendLocationPresenter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

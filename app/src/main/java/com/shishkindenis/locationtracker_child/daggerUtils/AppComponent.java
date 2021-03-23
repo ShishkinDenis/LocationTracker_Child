@@ -15,10 +15,8 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-//@Component(modules = {FirebaseAuthModule.class, IdSingletonModule.class})
-//@Component(modules = {FirebaseUserSingletonModule.class})
-@Component
-public interface AppComponent{
+@Component(modules = {FirebaseUserSingletonModule.class})
+public interface AppComponent {
 
     void inject(EmailAuthActivity emailAuthActivity);
 

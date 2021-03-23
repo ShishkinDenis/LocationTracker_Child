@@ -15,19 +15,15 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class MainActivity extends BaseActivity implements MainView {
-
-//    @InjectPresenter
-//    MainPresenter mainPresenter;
-
-
     @Inject
     @InjectPresenter
     MainPresenter mainPresenter;
+    private ActivityMainBinding binding;
 
     @ProvidePresenter
-    MainPresenter provideMainPresenter(){return mainPresenter;}
-
-    private ActivityMainBinding binding;
+    MainPresenter provideMainPresenter() {
+        return mainPresenter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

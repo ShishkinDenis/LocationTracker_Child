@@ -13,36 +13,16 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
-
-//    @Inject
-//    IdSingleton idSingleton;
-//@Inject
-//FirebaseUserSingleton firebaseUserSingleton;
-FirebaseUserSingleton firebaseUserSingleton;
-private String userId;
-
-
-
-
-//    public EmailAuthPresenter() {
-//
-//        MyApplication.appComponent.inject(this);
-//        Log.d("EmailAuthPresenter", "This is FirebaseUserSingleton injected");
-//    }
+    FirebaseUserSingleton firebaseUserSingleton;
+    private String userId;
 
     @Inject
     public EmailAuthPresenter(FirebaseUserSingleton firebaseUserSingleton) {
         this.firebaseUserSingleton = firebaseUserSingleton;
     }
 
-//    FirebaseAuth auth = firebaseUserSingleton.getFirebaseAuth();
-
     public void createAccount(FirebaseAuth auth, String email, String password) {
-//    public void createAccount(String email, String password) {
-//    public void createAccount(String email, String password) {
-//    public void createAccount(FirebaseUserSingleton firebaseUserSingleton, String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
-//        firebaseUserSingleton.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         getViewState().showToastWithEmail("User with email: " + email + " was signed up ");
@@ -53,18 +33,11 @@ private String userId;
     }
 
     public void signIn(FirebaseAuth auth, String email, String password) {
-//    public void signIn(String email, String password) {
-//    public void signIn(String email, String password) {
-//    public void signIn(FirebaseUserSingleton firebaseUserSingleton, String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
-//        firebaseUserSingleton.getFirebaseAuth().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-//                        FirebaseUser user = auth.getCurrentUser();
-//                        FirebaseUser user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
                         FirebaseUser user = auth.getCurrentUser();
                         userId = user.getUid();
-//                        idSingleton.setUserId(userId);
                         firebaseUserSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);
                         getViewState().goToSendLocationActivity();

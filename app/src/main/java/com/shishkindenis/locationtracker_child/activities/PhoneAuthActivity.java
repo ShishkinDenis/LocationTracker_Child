@@ -21,24 +21,17 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
-
-//    @InjectPresenter
-//    PhoneAuthPresenter phoneAuthPresenter;
-
-//    @Inject
-//    FirebaseAuth auth;
-//FirebaseAuth auth;
-
     @Inject
     @InjectPresenter
     PhoneAuthPresenter phoneAuthPresenter;
+    @Inject
+    FirebaseUserSingleton firebaseUserSingleton;
+    private ActivityPhoneAuthBinding binding;
 
     @ProvidePresenter
-    PhoneAuthPresenter providePhoneAuthPresenter(){return phoneAuthPresenter;}
-
-@Inject
-FirebaseUserSingleton firebaseUserSingleton;
-    private ActivityPhoneAuthBinding binding;
+    PhoneAuthPresenter providePhoneAuthPresenter() {
+        return phoneAuthPresenter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +40,6 @@ FirebaseUserSingleton firebaseUserSingleton;
         binding = ActivityPhoneAuthBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-
-//        auth = firebaseUserSingleton.getFirebaseAuth();
 
         binding.btnRequestCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
@@ -64,14 +54,12 @@ FirebaseUserSingleton firebaseUserSingleton;
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
             if (codeIsValid()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
-//                        auth, binding.etVerificationCode.getText().toString());
                         firebaseUserSingleton.getFirebaseAuth(), binding.etVerificationCode.getText().toString());
             } else {
                 setErrorIfInvalid();
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
-//        phoneAuthPresenter.phoneVerificationCallback(auth);
         phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth());
     }
 
@@ -83,12 +71,10 @@ FirebaseUserSingleton firebaseUserSingleton;
 
     private void startPhoneNumberVerification(String phoneNumber) {
         PhoneAuthOptions options =
-//                PhoneAuthOptions.newBuilder(auth)
                 PhoneAuthOptions.newBuilder(firebaseUserSingleton.getFirebaseAuth())
                         .setPhoneNumber(phoneNumber)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
-//                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
                         .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth()))
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);

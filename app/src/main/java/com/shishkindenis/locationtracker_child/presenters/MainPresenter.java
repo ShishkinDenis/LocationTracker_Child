@@ -11,24 +11,9 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
-
-//    @Inject
-//    FirebaseAuth auth;
-
-//    @Inject
-//    IdSingleton idSingleton;
-
-//    @Inject
-//    FirebaseUserSingleton firebaseUserSingleton;
-
     FirebaseUserSingleton firebaseUserSingleton;
-
     private String userID;
     private FirebaseUser user;
-
-//    public MainPresenter() {
-//        MyApplication.appComponent.inject(this);
-//    }
 
     @Inject
     public MainPresenter(FirebaseUserSingleton firebaseUserSingleton) {
@@ -36,15 +21,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void checkIfUserLoggedIn() {
-//        user = auth.getCurrentUser();
-//        if (user != null) {
-//            userID = user.getUid();
-//            idSingleton.setUserId(userID);
-//            getViewState().goToSendLocationActivityForResult();
-//        }
-
-
-    user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
+        user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
         if (user != null) {
             userID = user.getUid();
             firebaseUserSingleton.setUserId(userID);
