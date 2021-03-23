@@ -4,27 +4,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityMainBinding;
 import com.shishkindenis.locationtracker_child.presenters.MainPresenter;
 import com.shishkindenis.locationtracker_child.views.MainView;
 
+import javax.inject.Inject;
+
 import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 public class MainActivity extends BaseActivity implements MainView {
 
+//    @InjectPresenter
+//    MainPresenter mainPresenter;
+
+
+    @Inject
     @InjectPresenter
     MainPresenter mainPresenter;
+
+    @ProvidePresenter
+    MainPresenter provideMainPresenter(){return mainPresenter;}
+
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MyApplication.appComponent.inject(this);
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-//        это зачем?
-//        MyApplication.appComponent.inject(this);
 
         if (savedInstanceState == null) {
             mainPresenter.checkIfUserLoggedIn();

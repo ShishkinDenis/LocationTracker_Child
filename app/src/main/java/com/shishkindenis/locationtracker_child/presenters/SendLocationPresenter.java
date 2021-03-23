@@ -4,7 +4,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.shishkindenis.locationtracker_child.R;
-import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
 import com.shishkindenis.locationtracker_child.workers.LocationWorker;
@@ -19,13 +18,20 @@ public class SendLocationPresenter extends MvpPresenter<SendLocationView> {
 
 //    @Inject
 //    FirebaseAuth auth;
-    @Inject
+//    @Inject
+//    FirebaseUserSingleton firebaseUserSingleton;
     FirebaseUserSingleton firebaseUserSingleton;
 
-    @Inject
-    public SendLocationPresenter() {
-        MyApplication.appComponent.inject(this);
+
+//    public SendLocationPresenter() {
+//        MyApplication.appComponent.inject(this);
+//    }
+        @Inject
+        public SendLocationPresenter(FirebaseUserSingleton firebaseUserSingleton) {
+            this.firebaseUserSingleton = firebaseUserSingleton;
+    
     }
+
 
     public void startLocationWorker() {
         OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(LocationWorker.class).build();

@@ -1,7 +1,6 @@
 package com.shishkindenis.locationtracker_child.presenters;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.MainView;
 
@@ -19,15 +18,21 @@ public class MainPresenter extends MvpPresenter<MainView> {
 //    @Inject
 //    IdSingleton idSingleton;
 
-    @Inject
+//    @Inject
+//    FirebaseUserSingleton firebaseUserSingleton;
+
     FirebaseUserSingleton firebaseUserSingleton;
 
     private String userID;
     private FirebaseUser user;
 
+//    public MainPresenter() {
+//        MyApplication.appComponent.inject(this);
+//    }
+
     @Inject
-    public MainPresenter() {
-        MyApplication.appComponent.inject(this);
+    public MainPresenter(FirebaseUserSingleton firebaseUserSingleton) {
+        this.firebaseUserSingleton = firebaseUserSingleton;
     }
 
     public void checkIfUserLoggedIn() {

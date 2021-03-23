@@ -73,9 +73,10 @@ public class ForegroundService extends Service {
 
     @Override
     public void onCreate() {
+        MyApplication.appComponent.inject(this);
         super.onCreate();
         isGpsEnabled();
-        MyApplication.appComponent.inject(this);
+
 
 //        user = auth.getCurrentUser();
 //        if (user != null) {

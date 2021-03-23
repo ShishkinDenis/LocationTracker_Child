@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.shishkindenis.locationtracker_child.R;
@@ -19,15 +18,23 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
-    @InjectPresenter
-    PhoneAuthPresenter phoneAuthPresenter;
+//    @InjectPresenter
+//    PhoneAuthPresenter phoneAuthPresenter;
 
 //    @Inject
 //    FirebaseAuth auth;
-FirebaseAuth auth;
+//FirebaseAuth auth;
+
+    @Inject
+    @InjectPresenter
+    PhoneAuthPresenter phoneAuthPresenter;
+
+    @ProvidePresenter
+    PhoneAuthPresenter providePhoneAuthPresenter(){return phoneAuthPresenter;}
 
 @Inject
 FirebaseUserSingleton firebaseUserSingleton;
@@ -35,13 +42,14 @@ FirebaseUserSingleton firebaseUserSingleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MyApplication.appComponent.inject(this);
         super.onCreate(savedInstanceState);
         binding = ActivityPhoneAuthBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
-       MyApplication.appComponent.inject(this);
-        auth = firebaseUserSingleton.getFirebaseAuth();
+
+//        auth = firebaseUserSingleton.getFirebaseAuth();
 
         binding.btnRequestCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
@@ -57,14 +65,14 @@ FirebaseUserSingleton firebaseUserSingleton;
             if (codeIsValid()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
 //                        auth, binding.etVerificationCode.getText().toString());
-                        auth, binding.etVerificationCode.getText().toString());
+                        firebaseUserSingleton.getFirebaseAuth(), binding.etVerificationCode.getText().toString());
             } else {
                 setErrorIfInvalid();
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
 //        phoneAuthPresenter.phoneVerificationCallback(auth);
-        phoneAuthPresenter.phoneVerificationCallback(auth);
+        phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth());
     }
 
     public void goToSendLocationActivity() {
@@ -81,7 +89,7 @@ FirebaseUserSingleton firebaseUserSingleton;
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
 //                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
-                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
+                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth()))
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }

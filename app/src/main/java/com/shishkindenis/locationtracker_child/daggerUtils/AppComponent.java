@@ -3,6 +3,7 @@ package com.shishkindenis.locationtracker_child.daggerUtils;
 import com.shishkindenis.locationtracker_child.activities.EmailAuthActivity;
 import com.shishkindenis.locationtracker_child.activities.MainActivity;
 import com.shishkindenis.locationtracker_child.activities.PhoneAuthActivity;
+import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
 import com.shishkindenis.locationtracker_child.presenters.EmailAuthPresenter;
 import com.shishkindenis.locationtracker_child.presenters.MainPresenter;
 import com.shishkindenis.locationtracker_child.presenters.PhoneAuthPresenter;
@@ -24,6 +25,8 @@ public interface AppComponent{
     void inject(PhoneAuthActivity phoneAuthActivity);
 
     void inject(MainActivity mainActivity);
+
+    void inject(SendLocationActivity sendLocationActivity);
 
     void inject(MainPresenter mainPresenter);
 

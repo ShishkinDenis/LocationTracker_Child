@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.shishkindenis.locationtracker_child.R;
-import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
 
@@ -24,16 +23,22 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
 
 //    @Inject
 //    IdSingleton idSingleton;
-@Inject
+//@Inject
+//FirebaseUserSingleton firebaseUserSingleton;
 FirebaseUserSingleton firebaseUserSingleton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String phoneVerificationId;
     private PhoneAuthProvider.ForceResendingToken forceResendingToken;
     private String userId;
 
+//    @Inject
+//    public PhoneAuthPresenter() {
+//        MyApplication.appComponent.inject(this);
+//    }
+
     @Inject
-    public PhoneAuthPresenter() {
-        MyApplication.appComponent.inject(this);
+    public PhoneAuthPresenter(FirebaseUserSingleton firebaseUserSingleton) {
+        this.firebaseUserSingleton = firebaseUserSingleton;
     }
 
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks phoneVerificationCallback(FirebaseAuth auth) {

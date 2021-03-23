@@ -27,20 +27,32 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.shishkindenis.locationtracker_child.R;
+import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivitySendLocationBinding;
 import com.shishkindenis.locationtracker_child.presenters.SendLocationPresenter;
 import com.shishkindenis.locationtracker_child.services.ForegroundService;
 import com.shishkindenis.locationtracker_child.views.SendLocationView;
 
+import javax.inject.Inject;
+
 import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
 import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 
 public class SendLocationActivity extends BaseActivity implements SendLocationView {
 
     private static final int PERMISSION_ID = 1;
+//    @InjectPresenter
+//    SendLocationPresenter sendLocationPresenter;
+
+    @Inject
     @InjectPresenter
     SendLocationPresenter sendLocationPresenter;
+
+    @ProvidePresenter
+    SendLocationPresenter provideSendLocationPresenter(){return sendLocationPresenter;}
+
     private FusedLocationProviderClient fusedLocationClient;
     private boolean networkStatusOn;
     private boolean gpsStatusOn;
@@ -74,6 +86,7 @@ public class SendLocationActivity extends BaseActivity implements SendLocationVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MyApplication.appComponent.inject(this);
         super.onCreate(savedInstanceState);
         binding = ActivitySendLocationBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
