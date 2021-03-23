@@ -4,7 +4,6 @@ import android.app.Application;
 
 public class MyApplication extends Application {
 
-    public static ApplicationComponent appComponent = DaggerApplicationComponent.create();
+    public static AppComponent appComponent = DaggerAppComponent.create();
 
 }
-

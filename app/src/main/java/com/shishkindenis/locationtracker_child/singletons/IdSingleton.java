@@ -1,6 +1,6 @@
 package com.shishkindenis.locationtracker_child.singletons;
 
-public class IdSingleton {
+/*public class IdSingleton {
 
     private String userId;
 
@@ -11,4 +11,4 @@ public class IdSingleton {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-}
+}*/

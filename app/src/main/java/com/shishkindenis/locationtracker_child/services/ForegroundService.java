@@ -25,13 +25,12 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.activities.SendLocationActivity;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
-import com.shishkindenis.locationtracker_child.singletons.IdSingleton;
+import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,10 +52,12 @@ public class ForegroundService extends Service {
     private final static String TAG = "TAG";
     private final FirebaseFirestore firestoreDataBase = FirebaseFirestore.getInstance();
     private final Map<String, Object> locationMap = new HashMap<>();
+//    @Inject
+//    FirebaseAuth auth;
+//    @Inject
+//    IdSingleton idSingleton;
     @Inject
-    FirebaseAuth auth;
-    @Inject
-    IdSingleton idSingleton;
+    FirebaseUserSingleton firebaseUserSingleton;
     private FusedLocationProviderClient mFusedLocationClient;
     private String userId;
     private String time;
@@ -75,11 +76,21 @@ public class ForegroundService extends Service {
         super.onCreate();
         isGpsEnabled();
         MyApplication.appComponent.inject(this);
-        user = auth.getCurrentUser();
+
+//        user = auth.getCurrentUser();
+//        if (user != null) {
+//            idSingleton.setUserId(user.getUid());
+//            userId = idSingleton.getUserId();
+//        }
+
+        user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
         if (user != null) {
-            idSingleton.setUserId(user.getUid());
-            userId = idSingleton.getUserId();
+            firebaseUserSingleton.setUserId(user.getUid());
+            userId = firebaseUserSingleton.getUserId();
         }
+
+
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
@@ -153,9 +164,11 @@ public class ForegroundService extends Service {
     public void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(60);
-        mLocationRequest.setInterval(60000*10);
-        mLocationRequest.setFastestInterval(60000*10);
+//        mLocationRequest.setSmallestDisplacement(60);
+//        mLocationRequest.setInterval(60000*10);
+//        mLocationRequest.setFastestInterval(60000*10);
+        mLocationRequest.setInterval(6000);
+        mLocationRequest.setFastestInterval(6000);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 

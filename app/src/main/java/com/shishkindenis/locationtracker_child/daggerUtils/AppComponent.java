@@ -14,8 +14,11 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {FirebaseAuthModule.class, IdSingletonModule.class})
-public interface ApplicationComponent {
+//@Component(modules = {FirebaseAuthModule.class, IdSingletonModule.class})
+//@Component(modules = {FirebaseUserSingletonModule.class})
+@Component
+public interface AppComponent{
+
     void inject(EmailAuthActivity emailAuthActivity);
 
     void inject(PhoneAuthActivity phoneAuthActivity);

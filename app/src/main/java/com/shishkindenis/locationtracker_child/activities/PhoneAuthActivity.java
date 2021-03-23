@@ -11,6 +11,7 @@ import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityPhoneAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.PhoneAuthPresenter;
+import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,12 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
     @InjectPresenter
     PhoneAuthPresenter phoneAuthPresenter;
 
-    @Inject
-    FirebaseAuth auth;
+//    @Inject
+//    FirebaseAuth auth;
+FirebaseAuth auth;
+
+@Inject
+FirebaseUserSingleton firebaseUserSingleton;
     private ActivityPhoneAuthBinding binding;
 
     @Override
@@ -35,11 +40,12 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
         View view = binding.getRoot();
         setContentView(view);
 
-        MyApplication.appComponent.inject(this);
+       MyApplication.appComponent.inject(this);
+        auth = firebaseUserSingleton.getFirebaseAuth();
 
         binding.btnRequestCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
-            if (validatePhoneNumber()) {
+            if (phoneNumberIsValid()) {
                 startPhoneNumberVerification(binding.etPhoneNumber.getText().toString());
             } else {
                 setErrorIfInvalid();
@@ -48,14 +54,16 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
         });
         binding.btnVerifyCode.setOnClickListener(v -> {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
-            if (validateCode()) {
+            if (codeIsValid()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
+//                        auth, binding.etVerificationCode.getText().toString());
                         auth, binding.etVerificationCode.getText().toString());
             } else {
                 setErrorIfInvalid();
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
+//        phoneAuthPresenter.phoneVerificationCallback(auth);
         phoneAuthPresenter.phoneVerificationCallback(auth);
     }
 
@@ -67,21 +75,23 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
     private void startPhoneNumberVerification(String phoneNumber) {
         PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(auth)
+//                PhoneAuthOptions.newBuilder(auth)
+                PhoneAuthOptions.newBuilder(firebaseUserSingleton.getFirebaseAuth())
                         .setPhoneNumber(phoneNumber)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
+//                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
                         .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(auth))
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
 
 
-    public boolean validatePhoneNumber() {
+    public boolean phoneNumberIsValid() {
         return !binding.etPhoneNumber.getText().toString().isEmpty();
     }
 
-    public boolean validateCode() {
+    public boolean codeIsValid() {
         return !binding.etVerificationCode.getText().toString().isEmpty();
     }
 
@@ -101,10 +111,10 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
     }
 
     public void setErrorIfInvalid() {
-        if (!validatePhoneNumber()) {
+        if (!phoneNumberIsValid()) {
             showInvalidPhoneNumberError();
         }
-        if (!validateCode()) {
+        if (!codeIsValid()) {
             showInvalidCodeError();
         }
     }
