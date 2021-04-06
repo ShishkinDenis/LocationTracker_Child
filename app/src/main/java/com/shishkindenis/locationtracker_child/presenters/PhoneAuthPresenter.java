@@ -58,7 +58,7 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
         return callbacks;
     }
 
-    private void signInWithPhoneAuthCredential(FirebaseAuth auth, PhoneAuthCredential credential) {
+    public void signInWithPhoneAuthCredential(FirebaseAuth auth, PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
