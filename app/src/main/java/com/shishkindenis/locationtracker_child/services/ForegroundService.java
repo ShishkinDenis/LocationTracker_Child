@@ -151,11 +151,8 @@ public class ForegroundService extends Service {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(60);
-        mLocationRequest.setInterval(60000*10);
-        mLocationRequest.setFastestInterval(60000*10);
-//        For testing:
-//        mLocationRequest.setInterval(6000);
-//        mLocationRequest.setFastestInterval(6000);
+        mLocationRequest.setInterval(60000 * 10);
+        mLocationRequest.setFastestInterval(60000 * 10);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
