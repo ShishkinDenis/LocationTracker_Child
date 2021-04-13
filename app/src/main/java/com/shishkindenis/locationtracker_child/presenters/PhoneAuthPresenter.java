@@ -22,7 +22,7 @@ import moxy.MvpPresenter;
 public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> {
     FirebaseUserSingleton firebaseUserSingleton;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
-    private String phoneVerificationId;
+    private String phoneVerificationId = "phoneVerificationId";
     private PhoneAuthProvider.ForceResendingToken forceResendingToken;
     private String userId;
 

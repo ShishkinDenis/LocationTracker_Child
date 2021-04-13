@@ -36,4 +36,5 @@ public class SendLocationPresenterTest {
         sendLocationPresenter.signOut();
         verify(sendLocationView$$State).showToast(R.string.sign_out_successful);
     }
+
 }

@@ -55,7 +55,8 @@ public class ForegroundService extends Service {
     @Inject
     FirebaseUserSingleton firebaseUserSingleton;
     private FusedLocationProviderClient mFusedLocationClient;
-    private String userId;
+//    private String userId;
+    private String userId = "12345";
     private String time;
     private final LocationCallback mLocationCallback = new LocationCallback() {
         @Override

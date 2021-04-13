@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,5 +57,14 @@ public class PhoneAuthPresenterTest {
         OnCompleteListener<AuthResult> onCompleteListener = listenerCaptor.getValue();
         onCompleteListener.onComplete(task);
         verify(phoneAuthView$$State).showToast((R.string.authentication_failed));
+    }
+
+    @Test
+    public void verifyPhoneNumberWithCodeIsCalled(){
+        String code = "777";
+        when(task.addOnCanceledListener(any())).thenReturn(task);
+        when(auth.signInWithCredential(any())).thenReturn(task);
+        phoneAuthPresenter.verifyPhoneNumberWithCode(auth, code);
+        verify(auth).signInWithCredential(any());
     }
 }
