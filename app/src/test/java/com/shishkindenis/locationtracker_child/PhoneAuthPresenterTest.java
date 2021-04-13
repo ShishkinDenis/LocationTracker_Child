@@ -42,15 +42,17 @@ public class PhoneAuthPresenterTest {
 
     @Test
     public void signInWithCredentialIsCalled() {
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.signInWithCredential(credential)).thenReturn(task);
-        phoneAuthPresenter.signInWithPhoneAuthCredential(auth, credential);
+        phoneAuthPresenter.signInWithPhoneAuthCredential(credential);
         verify(auth).signInWithCredential(credential);
     }
 
     @Test
     public void authenticationFailedToastIsCalled() {
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.signInWithCredential(credential)).thenReturn(task);
-        phoneAuthPresenter.signInWithPhoneAuthCredential(auth, credential);
+        phoneAuthPresenter.signInWithPhoneAuthCredential(credential);
         ArgumentCaptor<OnCompleteListener<AuthResult>> listenerCaptor =
                 ArgumentCaptor.forClass(OnCompleteListener.class);
         verify(task).addOnCompleteListener(listenerCaptor.capture());
@@ -62,9 +64,10 @@ public class PhoneAuthPresenterTest {
     @Test
     public void verifyPhoneNumberWithCodeIsCalled(){
         String code = "777";
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(task.addOnCanceledListener(any())).thenReturn(task);
         when(auth.signInWithCredential(any())).thenReturn(task);
-        phoneAuthPresenter.verifyPhoneNumberWithCode(auth, code);
+        phoneAuthPresenter.verifyPhoneNumberWithCode(code);
         verify(auth).signInWithCredential(any());
     }
 }

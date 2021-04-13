@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityPhoneAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.PhoneAuthPresenter;
-import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.PhoneAuthView;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +24,7 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
     @Inject
     @InjectPresenter
     PhoneAuthPresenter phoneAuthPresenter;
-    @Inject
-    FirebaseUserSingleton firebaseUserSingleton;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private ActivityPhoneAuthBinding binding;
 
     @ProvidePresenter
@@ -54,13 +53,13 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
             binding.pbPhoneAuth.setVisibility(View.VISIBLE);
             if (codeIsValid()) {
                 phoneAuthPresenter.verifyPhoneNumberWithCode(
-                        firebaseUserSingleton.getFirebaseAuth(), binding.etVerificationCode.getText().toString());
+                        binding.etVerificationCode.getText().toString());
             } else {
                 setErrorIfInvalid();
             }
             binding.pbPhoneAuth.setVisibility(View.INVISIBLE);
         });
-        phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth());
+        phoneAuthPresenter.phoneVerificationCallback();
     }
 
     public void goToSendLocationActivity() {
@@ -71,15 +70,14 @@ public class PhoneAuthActivity extends BaseActivity implements PhoneAuthView {
 
     private void startPhoneNumberVerification(String phoneNumber) {
         PhoneAuthOptions options =
-                PhoneAuthOptions.newBuilder(firebaseUserSingleton.getFirebaseAuth())
+                PhoneAuthOptions.newBuilder(auth)
                         .setPhoneNumber(phoneNumber)
                         .setTimeout(60L, TimeUnit.SECONDS)
                         .setActivity(this)
-                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback(firebaseUserSingleton.getFirebaseAuth()))
+                        .setCallbacks(phoneAuthPresenter.phoneVerificationCallback())
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
-
 
     public boolean phoneNumberIsValid() {
         return !binding.etPhoneNumber.getText().toString().isEmpty();

@@ -9,7 +9,6 @@ import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.daggerUtils.MyApplication;
 import com.shishkindenis.locationtracker_child.databinding.ActivityEmailAuthBinding;
 import com.shishkindenis.locationtracker_child.presenters.EmailAuthPresenter;
-import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
 import com.shishkindenis.locationtracker_child.views.EmailAuthView;
 
 import javax.inject.Inject;
@@ -22,8 +21,6 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
     @Inject
     @InjectPresenter
     EmailAuthPresenter emailAuthPresenter;
-    @Inject
-    FirebaseUserSingleton firebaseUserSingleton;
     private ActivityEmailAuthBinding binding;
 
     @ProvidePresenter
@@ -85,14 +82,14 @@ public class EmailAuthActivity extends BaseActivity implements EmailAuthView {
 
     public void logInIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
-        emailAuthPresenter.signIn(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
+        emailAuthPresenter.signIn(binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());
         binding.pbEmailAuth.setVisibility(View.INVISIBLE);
     }
 
     public void registerIfValid() {
         binding.pbEmailAuth.setVisibility(View.VISIBLE);
-        emailAuthPresenter.createAccount(firebaseUserSingleton.getFirebaseAuth(), binding.etEmail.getText().toString(),
+        emailAuthPresenter.createAccount(binding.etEmail.getText().toString(),
                 binding.etPassword.getText().toString());
         binding.pbEmailAuth.setVisibility(View.INVISIBLE);
     }

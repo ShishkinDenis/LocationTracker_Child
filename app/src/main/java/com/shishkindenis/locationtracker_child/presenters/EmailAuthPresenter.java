@@ -1,6 +1,5 @@
 package com.shishkindenis.locationtracker_child.presenters;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shishkindenis.locationtracker_child.R;
 import com.shishkindenis.locationtracker_child.singletons.FirebaseUserSingleton;
@@ -21,8 +20,8 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
         this.firebaseUserSingleton = firebaseUserSingleton;
     }
 
-    public void createAccount(FirebaseAuth auth, String email, String password) {
-        auth.createUserWithEmailAndPassword(email, password)
+    public void createAccount(String email, String password) {
+        firebaseUserSingleton.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         getViewState().showToastWithEmail("User with email: " + email + " was signed up ");
@@ -32,11 +31,11 @@ public class EmailAuthPresenter extends MvpPresenter<EmailAuthView> {
                 });
     }
 
-    public void signIn(FirebaseAuth auth, String email, String password) {
-        auth.signInWithEmailAndPassword(email, password)
+    public void signIn(String email, String password) {
+        firebaseUserSingleton.getFirebaseAuth().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
+                        FirebaseUser user = firebaseUserSingleton.getFirebaseAuth().getCurrentUser();
                         userId = user.getUid();
                         firebaseUserSingleton.setUserId(userId);
                         getViewState().showToast(R.string.authentication_successful);

@@ -42,8 +42,9 @@ public class EmailAuthPresenterTest {
     public void createUserWithEmailAndPasswordIsCalled() {
         String email = "user" + randomInt() + "@example.com";
         String password = "password" + randomInt();
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.createUserWithEmailAndPassword(email, password)).thenReturn(task);
-        emailAuthPresenter.createAccount(auth, email, password);
+        emailAuthPresenter.createAccount(email, password);
         verify(auth).createUserWithEmailAndPassword(email, password);
     }
 
@@ -51,8 +52,9 @@ public class EmailAuthPresenterTest {
     public void signInWithEmailAndPasswordIsCalled() {
         String email = "user" + randomInt() + "@example.com";
         String password = "password" + randomInt();
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.signInWithEmailAndPassword(email, password)).thenReturn(task);
-        emailAuthPresenter.signIn(auth, email, password);
+        emailAuthPresenter.signIn(email, password);
         verify(auth).signInWithEmailAndPassword(email, password);
     }
 
@@ -64,8 +66,9 @@ public class EmailAuthPresenterTest {
     public void signingUpFailedToastIsCalled() {
         String email = "user" + randomInt() + "@example.com";
         String password = "password" + randomInt();
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.createUserWithEmailAndPassword(email, password)).thenReturn(task);
-        emailAuthPresenter.createAccount(auth, email, password);
+        emailAuthPresenter.createAccount(email, password);
         ArgumentCaptor<OnCompleteListener<AuthResult>> listenerCaptor =
                 ArgumentCaptor.forClass(OnCompleteListener.class);
         verify(task).addOnCompleteListener(listenerCaptor.capture());
@@ -78,8 +81,9 @@ public class EmailAuthPresenterTest {
     public void authenticationToastIsCalled() {
         String email = "user" + randomInt() + "@example.com";
         String password = "password" + randomInt();
+        when(firebaseUserSingleton.getFirebaseAuth()).thenReturn(auth);
         when(auth.signInWithEmailAndPassword(email, password)).thenReturn(task);
-        emailAuthPresenter.signIn(auth, email, password);
+        emailAuthPresenter.signIn(email, password);
         ArgumentCaptor<OnCompleteListener<AuthResult>> listenerCaptor =
                 ArgumentCaptor.forClass(OnCompleteListener.class);
         verify(task).addOnCompleteListener(listenerCaptor.capture());

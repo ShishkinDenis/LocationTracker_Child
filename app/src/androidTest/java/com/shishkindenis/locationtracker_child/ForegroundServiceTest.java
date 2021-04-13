@@ -26,7 +26,7 @@ public class ForegroundServiceTest {
                         ForegroundService.class);
         ContextCompat.startForegroundService(ApplicationProvider.getApplicationContext(),
                 serviceIntent);
-
+//        LocalBinder не имплементится
 //        IBinder binder = serviceRule.bindService(serviceIntent);
 //        ForegroundService service =
 //                ((ForegroundService.LocalBinder) binder).getService();
